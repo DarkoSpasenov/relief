@@ -1,25 +1,24 @@
 /* ==========================================================
    RELIEF — studio web suisse
-   Thème suisse : crème, chocolat, miel, sapin, rouge suisse
+   Thème alpin : neige, ciel de glacier, sapin, rouge suisse
    ========================================================== */
 @font-face{font-family:"Bricolage";src:url("fonts/bricolage.woff2") format("woff2");font-weight:200 800;font-display:swap}
 @font-face{font-family:"Inter";src:url("fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
 
 :root{
-  --bg:#FDF6E6;          /* crème */
+  --bg:#F6F9FA;          /* neige */
   --paper:#FFFFFF;
-  --ink:#3A1F12;         /* chocolat */
-  --ink-2:#55321F;
-  --muted:#8A6A55;
-  --line:rgba(58,31,18,.11);
+  --ink:#0F1B26;         /* roche sombre */
+  --ink-2:#263645;
+  --muted:#56677A;
+  --line:rgba(15,27,38,.11);
   --red:#DA291C;         /* rouge suisse */
   --red-dark:#B51F14;
   --fir:#2F6B4A;         /* sapin */
   --glacier:#7FC3DD;
-  --sky:#F9E3A6;
-  --gold:#E8A91C;        /* miel */
+  --sky:#CFE6F2;
   --radius:22px;
-  --shadow:0 30px 60px -28px rgba(90,50,20,.38),0 12px 24px -14px rgba(58,31,18,.16);
+  --shadow:0 30px 60px -28px rgba(15,45,70,.38),0 12px 24px -14px rgba(15,27,38,.16);
   --display:"Bricolage",ui-sans-serif,system-ui,sans-serif;
   --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --ease:cubic-bezier(.2,.8,.2,1);
@@ -55,21 +54,21 @@ button{font:inherit;cursor:pointer}
 .btn-ghost{background:rgba(255,255,255,.8);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);backdrop-filter:blur(8px)}
 .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
 
-.pill{display:inline-block;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.02em;background:rgba(58,31,18,.07);color:var(--ink-2)}
+.pill{display:inline-block;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.02em;background:rgba(15,27,38,.07);color:var(--ink-2)}
 .pill-red{background:rgba(218,41,28,.1);color:var(--red-dark)}
 .pill-green{background:rgba(47,107,74,.12);color:var(--fir)}
 
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 .eyebrow-light{color:rgba(255,255,255,.85)}
 /* balise des sentiers de montagne suisses : blanc, rouge, blanc */
-.blaze{flex:none;width:22px;height:14px;border-radius:3px;background:linear-gradient(#fff 0 30%,var(--red) 30% 70%,#fff 70%);box-shadow:0 0 0 1px rgba(58,31,18,.14)}
+.blaze{flex:none;width:22px;height:14px;border-radius:3px;background:linear-gradient(#fff 0 30%,var(--red) 30% 70%,#fff 70%);box-shadow:0 0 0 1px rgba(15,27,38,.14)}
 
 .hero-title em,.sec-title em{color:var(--red)}
 
 /* ---------- navigation ---------- */
 .nav{position:fixed;inset:0 0 auto;z-index:50;padding:14px 0}
 .nav-in{display:flex;align-items:center;gap:28px;height:64px;padding:0 10px 0 16px;border-radius:999px;transition:background .35s,box-shadow .35s}
-.nav.is-scrolled .nav-in{background:rgba(255,255,255,.82);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 10px 30px -18px rgba(58,31,18,.4),inset 0 0 0 1px rgba(255,255,255,.6)}
+.nav.is-scrolled .nav-in{background:rgba(255,255,255,.82);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 10px 30px -18px rgba(15,27,38,.4),inset 0 0 0 1px rgba(255,255,255,.6)}
 .logo{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:25px;letter-spacing:-.05em}
 .logo b{color:var(--red)}
 .nav-links{display:flex;gap:30px;margin-left:auto;font-weight:500;font-size:15px}
@@ -89,49 +88,44 @@ button{font:inherit;cursor:pointer}
 /* ---------- hero : les Alpes ---------- */
 .hero{position:relative;min-height:100svh;padding:130px 0 0;display:flex;flex-direction:column}
 /* le monde 3D reste fixe derrière la page : le défilement fait monter la caméra */
-.world{position:fixed;inset:0;height:100lvh;z-index:-1;background:linear-gradient(180deg,#F5CF6E 0%,#F9E2A6 38%,#FCF1D9 62%,#FCF1D9 100%);pointer-events:none}
+.world{position:fixed;inset:0;height:100lvh;z-index:-1;background:linear-gradient(180deg,#9FD0EA 0%,#C6E3F1 38%,#DCEBF3 62%,#DCEBF3 100%);pointer-events:none}
 .sun{position:absolute;right:9%;top:13%;width:min(15vw,170px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#FFFDF2 0 38%,rgba(255,244,205,.75) 40%,rgba(255,244,205,0) 70%)}
 .world canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .6s}
 .webgl-ready .world canvas{opacity:1}
 .hero-fallback{position:absolute;inset:auto 0 0;height:55%;background:url("alpes.svg") bottom/100% 100% no-repeat;display:none}
 .no-webgl .hero-fallback{display:block}
 .no-webgl .world canvas,.no-webgl .alti,.no-webgl .build{display:none}
-body.ascent{background:#FCF1D9}
+body.ascent{background:#DCEBF3}
 .hero-in{position:relative}
-.hero-copy::before{content:"";position:absolute;inset:-60px -90px -70px -200px;z-index:-1;background:radial-gradient(closest-side,rgba(252,241,217,.92) 40%,rgba(252,241,217,0));pointer-events:none}
+.hero-copy::before{content:"";position:absolute;inset:-60px -90px -70px -200px;z-index:-1;background:radial-gradient(closest-side,rgba(226,240,247,.92) 40%,rgba(226,240,247,0));pointer-events:none}
 .hero-copy{position:relative;max-width:660px;opacity:calc(1 - (var(--p) - .5) * 3.2);transform:translateY(calc((var(--p) - .5) * -220px)) scale(calc(1 - (var(--p) - .5) * .25));transform-origin:0 50%}
 .hero-title{font-size:clamp(46px,6.4vw,94px);margin:20px 0 20px;text-wrap:balance}
 .hero-sub{font-size:clamp(17px,1.4vw,20px);color:var(--ink-2);max-width:31ch}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.scroll-cue{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 18px 8px 10px;border-radius:999px;background:rgba(58,31,18,.72);color:#fff;font-size:14px;font-weight:600;backdrop-filter:blur(6px);white-space:nowrap}
+.scroll-cue{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 18px 8px 10px;border-radius:999px;background:rgba(15,27,38,.72);color:#fff;font-size:14px;font-weight:600;backdrop-filter:blur(6px);white-space:nowrap}
 .mouse{position:relative;width:20px;height:32px;border:2px solid #fff;border-radius:12px}
 .mouse i{position:absolute;left:50%;top:6px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:#fff;animation:cue 1.8s infinite}
 @keyframes cue{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(10px)}}
 
 /* étapes de construction : elles s'allument pendant que la montagne se construit */
 .build{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:26px 0 0}
-.build li{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;font-size:13.5px;font-weight:600;background:rgba(255,255,255,.55);color:rgba(58,31,18,.45);transition:background .5s,color .5s,box-shadow .5s}
+.build li{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;font-size:13.5px;font-weight:600;background:rgba(255,255,255,.55);color:rgba(15,27,38,.45);transition:background .5s,color .5s,box-shadow .5s}
 .build b{font-family:var(--display);font-size:12px;opacity:.7}
 .build li.is-on{background:#fff;color:var(--ink)}
-.build li.is-now{background:var(--ink);color:#fff;box-shadow:0 8px 18px -8px rgba(58,31,18,.6)}
+.build li.is-now{background:var(--ink);color:#fff;box-shadow:0 8px 18px -8px rgba(15,27,38,.6)}
 .build li:last-child.is-now{background:var(--red)}
 
 /* altimètre */
 .alti{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px 12px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);box-shadow:var(--shadow)}
-.alti-track{position:relative;width:5px;height:150px;border-radius:5px;background:rgba(58,31,18,.12);overflow:hidden}
+.alti-track{position:relative;width:5px;height:150px;border-radius:5px;background:rgba(15,27,38,.12);overflow:hidden}
 .alti-track i{position:absolute;inset:0;background:var(--red);transform-origin:50% 100%;transform:scaleY(.03);transition:transform .2s linear}
 .alti-txt{font-size:11px;font-weight:600;color:var(--muted);text-align:center;line-height:1.2}
 .alti-txt b{display:block;font-family:var(--display);font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
 
 /* ---------- bande clients ---------- */
-.marquee{--t:26px;--th:22px;position:relative;z-index:2;overflow:hidden;clip-path:inset(1.5px 0);color:#FDF6E6;padding:calc(18px + var(--th)) 0;transform:rotate(-2deg) scale(1.04);
-  /* tablette de chocolat : une rangée de triangles en haut et en bas */
-  background:
-    linear-gradient(var(--ink),var(--ink)) 0 50%/100% calc(100% - var(--th) * 2 + 2px) no-repeat,
-    conic-gradient(from 150deg at 50% 0,var(--ink) 60deg,transparent 0) 0 0/var(--t) var(--th) repeat-x,
-    conic-gradient(from -30deg at 50% 100%,var(--ink) 60deg,transparent 0) 0 100%/var(--t) var(--th) repeat-x}
+.marquee{position:relative;z-index:2;overflow:hidden;background:var(--ink);color:#fff;padding:20px 0;transform:rotate(-2deg) scale(1.04)}
 .marquee-track{display:flex;gap:38px;width:max-content;transform:translateX(calc(var(--p) * -42%));font-family:var(--display);font-weight:700;font-size:clamp(22px,2.6vw,34px);letter-spacing:-.03em;align-items:center}
-.marquee-track i{font-style:normal;color:var(--gold);font-size:.55em}
+.marquee-track i{font-style:normal;color:var(--red);font-size:.55em}
 
 /* ---------- sections ---------- */
 .section{padding:clamp(80px,11vw,140px) 0;position:relative}
@@ -175,11 +169,11 @@ body.ascent{background:#FCF1D9}
     radial-gradient(ellipse 15% 13% at 50% 79%,#b4bdc6 97%,transparent) ,
     repeating-linear-gradient(90deg,transparent 0 .9%,#2a3540 .9% 6.6%,transparent 6.6% 7.5%) 50% 16%/86% 50% no-repeat,
     linear-gradient(#e7ebef,#c3cad1);
-  box-shadow:0 60px 60px -10px rgba(90,50,20,.45),inset 0 -6px 0 #9aa4ae}
+  box-shadow:0 60px 60px -10px rgba(15,45,70,.45),inset 0 -6px 0 #9aa4ae}
 .laptop-base::before{content:"";position:absolute;left:7%;right:7%;top:16%;height:50%;background:repeating-linear-gradient(0deg,transparent 0 3%,#e7ebef 3% 4.5%,transparent 4.5% 20%);background-size:100% 20%;opacity:.9}
 .laptop:hover .laptop-screen img{transform:scale(1.03)}
 .laptop-screen img{transition:transform .8s var(--ease)}
-.shot-placeholder{display:grid;place-content:center;text-align:center;gap:6px;background:url("alpes-blanc.svg") bottom/100% 60% no-repeat,linear-gradient(160deg,#6B3A1E,#3A1F12);color:#fff}
+.shot-placeholder{display:grid;place-content:center;text-align:center;gap:6px;background:url("alpes-blanc.svg") bottom/100% 60% no-repeat,linear-gradient(160deg,#1c3a52,#0F1B26);color:#fff}
 .shot-placeholder b{font-family:var(--display);font-size:clamp(34px,6vw,72px);letter-spacing:-.05em;line-height:1}
 .shot-placeholder b em{color:#FF6A5E}
 .shot-placeholder small{font-size:13px;opacity:.8;letter-spacing:.08em;text-transform:uppercase}
@@ -201,7 +195,7 @@ body.ascent{background:#FCF1D9}
 .guide-b .guide-copy{justify-items:end}
 .medal{position:relative;width:clamp(120px,19vw,250px);aspect-ratio:1;border-radius:50%;transform:scale(calc(.55 + .45 * var(--e))) rotate(calc((1 - var(--e)) * -25deg))}
 .medal img,.medal b{position:absolute;inset:9px;width:calc(100% - 18px);height:calc(100% - 18px);border-radius:50%;object-fit:cover;object-position:50% 22%;box-shadow:0 0 0 5px #fff}
-.medal b{display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,84px);letter-spacing:-.06em;color:#fff;background:url("alpes-blanc.svg") bottom/100% 55% no-repeat,linear-gradient(180deg,#E8A91C,#6B3A1E)}
+.medal b{display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(40px,6vw,84px);letter-spacing:-.06em;color:#fff;background:url("alpes-blanc.svg") bottom/100% 55% no-repeat,linear-gradient(180deg,#7FC3DD,#2F6B4A)}
 /* anneau de mousqueton : il tourne quand on défile */
 .medal-ring{position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(var(--red) 0 72%,transparent 72% 78%,var(--ink) 78% 96%,transparent 96%);transform:rotate(calc(var(--p) * 420deg));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px))}
 .medal-n{position:absolute;right:-4px;bottom:2px;display:grid;place-items:center;width:clamp(36px,4.6vw,56px);aspect-ratio:1;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--display);font-weight:800;font-size:clamp(13px,1.5vw,19px);box-shadow:0 0 0 4px #fff}
@@ -263,7 +257,7 @@ body.ascent{background:#FCF1D9}
 .legal-box p{color:var(--muted);margin-bottom:24px}
 .legal-box a,.back{color:var(--red-dark);font-weight:600}
 .lost .wrap{display:grid;justify-items:center}
-.lost{min-height:100svh;display:grid;place-items:center;text-align:center;padding:120px 0 34vh;background:url("alpes.svg") bottom/100% 45% no-repeat,linear-gradient(180deg,#F5CF6E,#FCF1D9 70%)}
+.lost{min-height:100svh;display:grid;place-items:center;text-align:center;padding:120px 0 34vh;background:url("alpes.svg") bottom/100% 45% no-repeat,linear-gradient(180deg,#9FD0EA,#DCEBF3 70%)}
 .lost .hero-sub{margin:0 auto 30px}
 
 /* ==========================================================
@@ -306,7 +300,7 @@ body.ascent{background:#FCF1D9}
 .contact-card .sec-title{margin:0;font-size:clamp(28px,3.4vw,42px)}
 .contact-mail{margin:0;font-size:16px;border-bottom:2px solid var(--red)}
 .form{gap:10px}
-.form input,.form textarea{background:#FAEFD8;padding:12px 14px;border-radius:14px}
+.form input,.form textarea{background:#EEF3F6;padding:12px 14px;border-radius:14px}
 .form .btn{margin-top:2px;height:48px}
 .form-status{min-height:0;color:var(--fir)}
 /* repères d'altitude plus discrets */

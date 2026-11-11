@@ -20,7 +20,7 @@ function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let
 const rand = rng(11);
 const simplex = new SimplexNoise({ random: rng(5) });
 const smooth = (x, a, b) => { const t = MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-const PEAK = { x: 12, z: -24, h: 23 };
+const PEAK = { x: 12, z: -24, h: 19 };
 
 function ridged(x, z) {
   let amp = 1, f = 1, sum = 0, norm = 0;
@@ -40,11 +40,8 @@ function height(x, z) {
   h += simplex.noise(x * 0.16, z * 0.16) * 0.35 * side;
   // le sommet principal, une pyramide un peu asymétrique
   const dx = x - PEAK.x, dz = z - PEAK.z;
-  // une pyramide à quatre faces, comme le Cervin : arêtes nettes, face est plus raide
-  const u = (dx * 0.82 - dz * 0.57) * (dx > 0 ? 1.3 : 0.92), v = dx * 0.57 + dz * 0.82;
-  const d = Math.hypot(u, v) * 0.35 + Math.max(Math.abs(u), Math.abs(v)) * 0.82;
-  const p = Math.max(0, 1 - d / 12.5);
-  h += (Math.pow(p, 1.5) * 0.8 + Math.pow(p, 5) * 0.2) * PEAK.h * (0.92 + 0.08 * simplex.noise(x * 0.3, z * 0.3));
+  const p = Math.max(0, 1 - Math.hypot(dx * (dx > 0 ? 1.15 : 0.9), dz * 1.1) / 12);
+  h += Math.pow(p, 1.75) * PEAK.h * (0.88 + 0.12 * simplex.noise(x * 0.3, z * 0.3));
   return h;
 }
 
@@ -54,10 +51,10 @@ function start(renderer) {
   renderer.outputColorSpace = SRGBColorSpace;
 
   const scene = new Scene();
-  scene.fog = new Fog(new Color('#FCF1D9'), 42, 125);
+  scene.fog = new Fog(new Color('#DCEBF3'), 42, 125);
   const camera = new PerspectiveCamera(40, 1, 0.5, 260);
 
-  scene.add(new HemisphereLight(0xfff8ea, 0xd0c2ae, 1.5));
+  scene.add(new HemisphereLight(0xeaf6ff, 0xa9bcc4, 1.45));
   const sun = new DirectionalLight(0xfff1dc, 2.3); sun.position.set(30, 38, 18); scene.add(sun);
 
   const land = new Group();   // tout ce qui « pousse » à l'arrivée
@@ -68,7 +65,7 @@ function start(renderer) {
   const wireGeo = new PlaneGeometry(150, 150, 64, 64);
   wireGeo.rotateX(-Math.PI / 2);
   for (let i = 0, wp = wireGeo.attributes.position; i < wp.count; i++) wp.setY(i, height(wp.getX(i), wp.getZ(i)) + 0.05);
-  const wire = new Mesh(wireGeo, new MeshBasicMaterial({ color: '#6B3A1E', wireframe: true, transparent: true, opacity: 0.6 }));
+  const wire = new Mesh(wireGeo, new MeshBasicMaterial({ color: '#1F5E86', wireframe: true, transparent: true, opacity: 0.6 }));
   land.add(wire);
 
   /* 2) les volumes : terrain facetté, couleur par face selon l'altitude et la pente */
@@ -81,7 +78,7 @@ function start(renderer) {
   geo.computeVertexNormals();
   const P = geo.attributes.position, N = geo.attributes.normal;
   const colors = new Float32Array(P.count * 3);
-  const c = new Color(), snow = new Color('#FFFFFF'), ice = new Color('#F1F2F0'), rock = new Color('#8A6044'), rockDark = new Color('#5E3D29'),
+  const c = new Color(), snow = new Color('#FFFFFF'), ice = new Color('#E6F0F8'), rock = new Color('#8E98A6'), rockDark = new Color('#6E7A89'),
     alp = new Color('#9DBE77'), meadow = new Color('#6FB067'), shore = new Color('#B9C9A0');
   for (let i = 0; i < P.count; i += 3) {
     const h = (P.getY(i) + P.getY(i + 1) + P.getY(i + 2)) / 3;
@@ -104,7 +101,7 @@ function start(renderer) {
     sh.uniforms.uReveal = reveal;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vH;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvH = position.y;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vH;\nuniform float uReveal;')
-      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = mix(vec3(0.93, 0.88, 0.80), diffuseColor.rgb, 1.0 - smoothstep(uReveal - 1.2, uReveal + 1.2, vH));');
+      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = mix(vec3(0.85, 0.88, 0.91), diffuseColor.rgb, 1.0 - smoothstep(uReveal - 1.2, uReveal + 1.2, vH));');
   };
   const solid = new Mesh(geo, landMat);
   solid.visible = reduce;
@@ -126,12 +123,11 @@ function start(renderer) {
     spots.push([x, h, z]);
   }
   const treeMat = new MeshStandardMaterial({ color: '#2F6B4A', flatShading: true, roughness: 1 });
-  const grow = (sh) => {
+  treeMat.onBeforeCompile = (sh) => {
     sh.uniforms.uReveal = reveal;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform float uReveal;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\n#ifdef USE_INSTANCING\ntransformed *= 1.0 - smoothstep(uReveal - 1.2, uReveal + 1.2, instanceMatrix[3].y);\n#endif');
   };
-  treeMat.onBeforeCompile = grow;
   const trees = new InstancedMesh(new ConeGeometry(0.34, 1.25, 5), treeMat, spots.length);
   const dummy = new Object3D();
   spots.forEach((s, i) => {
@@ -140,30 +136,6 @@ function start(renderer) {
     dummy.updateMatrix(); trees.setMatrixAt(i, dummy.matrix);
   });
   land.add(trees);
-
-  /* chalets : bois sombre et toit rouge, posés sur les replats de la vallée */
-  const crand = rng(23), homes = [];
-  for (let i = 0; i < 6000 && homes.length < 46; i++) {
-    const x = (crand() - 0.5) * 70, z = crand() * 62 - 40;
-    const h = height(x, z);
-    if (h < 0.75 || h > 4.6) continue;
-    if (Math.abs(height(x + 0.8, z) - h) > 0.22 || Math.abs(height(x, z + 0.8) - h) > 0.22 || Math.abs(height(x - 0.8, z) - h) > 0.22) continue;
-    if (homes.some((o) => Math.hypot(o[0] - x, o[2] - z) < 2.6)) continue;
-    homes.push([x, h, z]);
-  }
-  const wallMat = new MeshStandardMaterial({ color: '#7A4A2B', flatShading: true, roughness: 1 });
-  const roofMat = new MeshStandardMaterial({ color: '#C8321F', flatShading: true, roughness: 0.9 });
-  wallMat.onBeforeCompile = grow; roofMat.onBeforeCompile = grow;
-  const roofGeo = new ConeGeometry(0.62, 0.42, 4); roofGeo.rotateY(Math.PI / 4); roofGeo.scale(1.12, 1, 0.86);
-  const walls = new InstancedMesh(new BoxGeometry(0.8, 0.46, 0.58), wallMat, homes.length);
-  const roofs = new InstancedMesh(roofGeo, roofMat, homes.length);
-  homes.forEach((s, i) => {
-    const k = 0.85 + crand() * 0.5, ry = crand() * 6;
-    dummy.rotation.set(0, ry, 0); dummy.scale.setScalar(k);
-    dummy.position.set(s[0], s[1] + 0.2 * k, s[2]); dummy.updateMatrix(); walls.setMatrixAt(i, dummy.matrix);
-    dummy.position.set(s[0], s[1] + 0.63 * k, s[2]); dummy.updateMatrix(); roofs.setMatrixAt(i, dummy.matrix);
-  });
-  land.add(walls, roofs);
 
   /* drapeau suisse au sommet */
   const top = height(PEAK.x, PEAK.z);
@@ -195,7 +167,7 @@ function start(renderer) {
   land.add(cable, cabin);
 
   /* nuages */
-  const cloudMat = new MeshStandardMaterial({ color: '#FFFFFF', emissive: '#E6D9C2', emissiveIntensity: 0.75, flatShading: true, roughness: 1, fog: false });
+  const cloudMat = new MeshStandardMaterial({ color: '#FFFFFF', emissive: '#C9D6DE', emissiveIntensity: 0.75, flatShading: true, roughness: 1, fog: false });
   const puff = new IcosahedronGeometry(1, 1);
   const clouds = [[-26, 15, -30, 1.5], [-4, 19, -46, 1.9], [30, 17.5, -40, 1.6], [20, 12, -6, 0.9], [-16, 10.5, -8, 0.8], [-14, 19, -14, 1.1], [26, 24, -22, 1.3], [-8, 27, -40, 1.7]].map(([x, y, z, s], i) => {
     const g = new Group();
