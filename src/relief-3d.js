@@ -10,7 +10,7 @@ import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, PlaneGeometry, BoxGeometry, ConeGeometry,
   CylinderGeometry, IcosahedronGeometry, MeshStandardMaterial, MeshBasicMaterial, CanvasTexture,
   InstancedMesh, Object3D, Fog, Color, HemisphereLight, DirectionalLight, BufferAttribute,
-  BufferGeometry, Line, LineBasicMaterial, Vector3, CatmullRomCurve3, SRGBColorSpace, NoToneMapping, DoubleSide, MathUtils
+  BufferGeometry, Line, LineBasicMaterial, Points, PointsMaterial, Vector3, CatmullRomCurve3, SRGBColorSpace, NoToneMapping, DoubleSide, MathUtils
 } from 'three';
 import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js';
 
@@ -182,6 +182,18 @@ function start(renderer) {
     return g;
   });
 
+  /* neige : des flocons autour de la caméra, de plus en plus présents avec l'altitude */
+  const FLAKES = 700, BOX = 34;
+  const flakePos = new Float32Array(FLAKES * 3);
+  for (let i = 0; i < FLAKES * 3; i++) flakePos[i] = (rand() - 0.5) * BOX;
+  const flakeGeo = new BufferGeometry();
+  flakeGeo.setAttribute('position', new BufferAttribute(flakePos, 3));
+  const flakes = new Points(flakeGeo, new PointsMaterial({ color: '#FFFFFF', size: 0.16, transparent: true, opacity: 0, depthWrite: false, fog: false }));
+  flakes.frustumCulled = false;
+  scene.add(flakes);
+  const cloudpass = document.querySelector('[data-cloudpass]');
+  let lastT = 0;
+
   /* ---------- le chemin de la caméra, de la vallée au sommet ---------- */
   const V = (a) => a.map((p) => new Vector3(p[0], p[1], p[2]));
   // on longe le lac, on contourne le sommet par l'ouest en gardant du recul, puis on se pose près du drapeau
@@ -257,6 +269,23 @@ function start(renderer) {
 
     const alt = Math.round((560 + prog * (4478 - 560)) / 10) * 10;   // 4478 m : l'altitude du Cervin
     if (alt !== shownAlt && altiN) { shownAlt = alt; altiN.textContent = alt.toLocaleString('fr-CH'); if (altiBar) altiBar.style.transform = 'scaleY(' + Math.max(0.03, prog).toFixed(3) + ')'; }
+
+    /* traversée de la mer de nuages vers les deux tiers de la montée, puis la neige */
+    if (cloudpass) cloudpass.style.opacity = (Math.max(0, 1 - Math.abs(prog - 0.6) / 0.075) * 0.92).toFixed(3);
+    const snowing = smooth(prog, 0.62, 0.8);
+    flakes.visible = snowing > 0.01 && !reduce;
+    if (flakes.visible) {
+      const dt = Math.min(0.05, Math.max(0, t - lastT));
+      flakes.material.opacity = snowing * 0.95;
+      flakes.position.copy(camPos);
+      for (let i = 0; i < FLAKES * 3; i += 3) {
+        flakePos[i] += dt * (1.6 + (i % 7) * 0.2); flakePos[i + 1] -= dt * (2.2 + (i % 5) * 0.5);
+        if (flakePos[i + 1] < -BOX / 2) flakePos[i + 1] += BOX;
+        if (flakePos[i] > BOX / 2) flakePos[i] -= BOX;
+      }
+      flakeGeo.attributes.position.needsUpdate = true;
+    }
+    lastT = t;
 
     if (!reduce) {
       clouds.forEach((g) => { g.position.x = g.userData.x + ((t * g.userData.speed) % 90); if (g.position.x > 55) g.position.x -= 110; });

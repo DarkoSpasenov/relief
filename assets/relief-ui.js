@@ -34,16 +34,47 @@
     });
   }
 
-  /* ---------- réalisations : les ordinateurs s'ouvrent à l'arrivée ---------- */
-  var climbs = document.querySelectorAll('[data-climb]');
-  if (reduce || !('IntersectionObserver' in window)) {
-    climbs.forEach(function (c) { c.classList.add('is-open'); });
-  } else {
-    var lio = new IntersectionObserver(function (en) {
-      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('is-open'); lio.unobserve(x.target); } });
-    }, { threshold: 0.35 });
-    climbs.forEach(function (c) { lio.observe(c); });
+  /* ---------- effets pilotés par le défilement ----------
+     Chaque élément [data-scroll] reçoit deux variables CSS :
+     --e : son entrée dans l'écran (0 = il arrive par le bas, 1 = il est en place)
+     --p : sa traversée de l'écran (0 = il arrive, 1 = il est sorti par le haut)
+     Les animations elles-mêmes sont dans relief.css. */
+  var scrubbed = Array.prototype.slice.call(document.querySelectorAll('[data-scroll]'));
+  if (!reduce && scrubbed.length) {
+    var active = [], ticking = false;
+    var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
+    var ease = function (v) { return 1 - Math.pow(1 - v, 3); };
+    var update = function () {
+      ticking = false;
+      var vh = window.innerHeight;
+      for (var i = 0; i < active.length; i++) {
+        var el = active[i], r = el.getBoundingClientRect();
+        el.style.setProperty('--e', ease(clamp((vh * 0.98 - r.top) / (vh * 0.62))).toFixed(4));
+        el.style.setProperty('--p', clamp((vh - r.top) / (vh + r.height)).toFixed(4));
+      }
+    };
+    var ask = function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    if ('IntersectionObserver' in window) {
+      var sio = new IntersectionObserver(function (en) {
+        en.forEach(function (x) {
+          var k = active.indexOf(x.target);
+          if (x.isIntersecting && k < 0) active.push(x.target);
+          else if (!x.isIntersecting && k >= 0) {
+            active.splice(k, 1);
+            // sorti de l'écran : on fige l'état final du bon côté
+            var above = x.boundingClientRect.top < 0;
+            x.target.style.setProperty('--e', above ? '1' : '0'); x.target.style.setProperty('--p', above ? '1' : '0');
+          }
+        });
+        ask();
+      }, { rootMargin: '10% 0px 10% 0px' });
+      scrubbed.forEach(function (el) { el.style.setProperty('--e', '0'); el.style.setProperty('--p', '0'); sio.observe(el); });
+    } else active = scrubbed;
+    window.addEventListener('scroll', ask, { passive: true });
+    window.addEventListener('resize', ask);
+    ask();
   }
+
   // l'ordinateur suit légèrement la souris
   if (finePointer && !reduce) {
     document.querySelectorAll('.laptop').forEach(function (lap) {
@@ -72,19 +103,6 @@
       el.addEventListener('mouseleave', function () {
         target.style.setProperty('--rx', '0deg'); target.style.setProperty('--ry', '0deg');
       });
-    });
-  }
-
-  /* ---------- apparition au scroll ---------- */
-  var toReveal = document.querySelectorAll('.sec-head, .climb-copy, .team > *, .steps > *, .contact-card');
-  if ('IntersectionObserver' in window && !reduce) {
-    var rio = new IntersectionObserver(function (en) {
-      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('is-in'); rio.unobserve(x.target); } });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    toReveal.forEach(function (el, i) {
-      el.classList.add('reveal');
-      el.style.transitionDelay = (el.parentElement.classList.contains('steps') || el.parentElement.classList.contains('team') ? (Array.prototype.indexOf.call(el.parentElement.children, el) * 0.12) : 0) + 's';
-      rio.observe(el);
     });
   }
 
