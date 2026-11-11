@@ -106,6 +106,38 @@
     });
   }
 
+  /* ---------- titre : les mots montent un par un ---------- */
+  document.querySelectorAll('[data-words]').forEach(function (h) {
+    if (reduce) return;
+    var n = 0;
+    (function split(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (c) {
+        if (c.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function (w) {
+            if (!w.trim()) { frag.appendChild(document.createTextNode(w)); return; }
+            var o = document.createElement('span'); o.className = 'w';
+            var i = document.createElement('span'); i.textContent = w; i.style.animationDelay = (0.15 + n++ * 0.07) + 's';
+            o.appendChild(i); frag.appendChild(o);
+          });
+          node.replaceChild(frag, c);
+        } else if (c.nodeType === 1) split(c);
+      });
+    })(h);
+    h.classList.add('is-split');
+  });
+
+  /* ---------- boutons aimantés ---------- */
+  if (finePointer && !reduce) {
+    document.querySelectorAll('.btn').forEach(function (b) {
+      b.addEventListener('mousemove', function (e) {
+        var r = b.getBoundingClientRect();
+        b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1) + 'px)';
+      });
+      b.addEventListener('mouseleave', function () { b.style.transform = ''; });
+    });
+  }
+
   /* ---------- formulaire (Formspree) ---------- */
   if (form && window.fetch) {
     var status = form.querySelector('[data-form-status]');

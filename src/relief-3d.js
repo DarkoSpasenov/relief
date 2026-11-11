@@ -10,7 +10,7 @@ import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, PlaneGeometry, BoxGeometry, ConeGeometry,
   CylinderGeometry, IcosahedronGeometry, MeshStandardMaterial, MeshBasicMaterial, CanvasTexture,
   InstancedMesh, Object3D, Fog, Color, HemisphereLight, DirectionalLight, BufferAttribute,
-  BufferGeometry, Line, LineBasicMaterial, Points, PointsMaterial, Vector3, CatmullRomCurve3, SRGBColorSpace, NoToneMapping, DoubleSide, MathUtils
+  BufferGeometry, Line, LineBasicMaterial, Points, PointsMaterial, Vector3, CatmullRomCurve3, SRGBColorSpace, NoToneMapping, DoubleSide, MathUtils, AdditiveBlending
 } from 'three';
 import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js';
 
@@ -20,7 +20,7 @@ function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let
 const rand = rng(11);
 const simplex = new SimplexNoise({ random: rng(5) });
 const smooth = (x, a, b) => { const t = MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-const PEAK = { x: 12, z: -24, h: 19 };
+const PEAK = { x: 12, z: -24, h: 23 };
 
 function ridged(x, z) {
   let amp = 1, f = 1, sum = 0, norm = 0;
@@ -40,8 +40,11 @@ function height(x, z) {
   h += simplex.noise(x * 0.16, z * 0.16) * 0.35 * side;
   // le sommet principal, une pyramide un peu asymétrique
   const dx = x - PEAK.x, dz = z - PEAK.z;
-  const p = Math.max(0, 1 - Math.hypot(dx * (dx > 0 ? 1.15 : 0.9), dz * 1.1) / 12);
-  h += Math.pow(p, 1.75) * PEAK.h * (0.88 + 0.12 * simplex.noise(x * 0.3, z * 0.3));
+  // une pyramide à quatre faces, comme le Cervin : arêtes nettes, face est plus raide
+  const u = (dx * 0.82 - dz * 0.57) * (dx > 0 ? 1.3 : 0.92), v = dx * 0.57 + dz * 0.82;
+  const d = Math.hypot(u, v) * 0.35 + Math.max(Math.abs(u), Math.abs(v)) * 0.82;
+  const p = Math.max(0, 1 - d / 12.5);
+  h += (Math.pow(p, 1.5) * 0.8 + Math.pow(p, 5) * 0.2) * PEAK.h * (0.92 + 0.08 * simplex.noise(x * 0.3, z * 0.3));
   return h;
 }
 
@@ -123,11 +126,12 @@ function start(renderer) {
     spots.push([x, h, z]);
   }
   const treeMat = new MeshStandardMaterial({ color: '#2F6B4A', flatShading: true, roughness: 1 });
-  treeMat.onBeforeCompile = (sh) => {
+  const grow = (sh) => {
     sh.uniforms.uReveal = reveal;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nuniform float uReveal;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\n#ifdef USE_INSTANCING\ntransformed *= 1.0 - smoothstep(uReveal - 1.2, uReveal + 1.2, instanceMatrix[3].y);\n#endif');
   };
+  treeMat.onBeforeCompile = grow;
   const trees = new InstancedMesh(new ConeGeometry(0.34, 1.25, 5), treeMat, spots.length);
   const dummy = new Object3D();
   spots.forEach((s, i) => {
@@ -136,6 +140,30 @@ function start(renderer) {
     dummy.updateMatrix(); trees.setMatrixAt(i, dummy.matrix);
   });
   land.add(trees);
+
+  /* chalets : bois sombre et toit rouge, posés sur les replats de la vallée */
+  const crand = rng(23), homes = [];
+  for (let i = 0; i < 6000 && homes.length < 46; i++) {
+    const x = (crand() - 0.5) * 70, z = crand() * 62 - 40;
+    const h = height(x, z);
+    if (h < 0.75 || h > 4.6) continue;
+    if (Math.abs(height(x + 0.8, z) - h) > 0.22 || Math.abs(height(x, z + 0.8) - h) > 0.22 || Math.abs(height(x - 0.8, z) - h) > 0.22) continue;
+    if (homes.some((o) => Math.hypot(o[0] - x, o[2] - z) < 2.6)) continue;
+    homes.push([x, h, z]);
+  }
+  const wallMat = new MeshStandardMaterial({ color: '#7A4A2B', flatShading: true, roughness: 1 });
+  const roofMat = new MeshStandardMaterial({ color: '#C8321F', flatShading: true, roughness: 0.9 });
+  wallMat.onBeforeCompile = grow; roofMat.onBeforeCompile = grow;
+  const roofGeo = new ConeGeometry(0.62, 0.42, 4); roofGeo.rotateY(Math.PI / 4); roofGeo.scale(1.12, 1, 0.86);
+  const walls = new InstancedMesh(new BoxGeometry(0.8, 0.46, 0.58), wallMat, homes.length);
+  const roofs = new InstancedMesh(roofGeo, roofMat, homes.length);
+  homes.forEach((s, i) => {
+    const k = 0.85 + crand() * 0.5, ry = crand() * 6;
+    dummy.rotation.set(0, ry, 0); dummy.scale.setScalar(k);
+    dummy.position.set(s[0], s[1] + 0.2 * k, s[2]); dummy.updateMatrix(); walls.setMatrixAt(i, dummy.matrix);
+    dummy.position.set(s[0], s[1] + 0.63 * k, s[2]); dummy.updateMatrix(); roofs.setMatrixAt(i, dummy.matrix);
+  });
+  land.add(walls, roofs);
 
   /* drapeau suisse au sommet */
   const top = height(PEAK.x, PEAK.z);
@@ -165,6 +193,41 @@ function start(renderer) {
   arm.position.y = -0.24;
   cabin.add(box, glass, arm);
   land.add(cable, cabin);
+
+  /* parapentes : ils tournent au-dessus de la vallée */
+  const gliders = [['#DA291C', -3, 10.5, 4, 8, 0.2], ['#F5B83D', 3, 15.5, -9, 10, -0.15]].map(([col, cx, cy, cz, r, sp]) => {
+    const g = new Group();
+    const wingMat = new MeshStandardMaterial({ color: col, flatShading: true, roughness: 0.7 });
+    const whiteMat = new MeshStandardMaterial({ color: '#FFFFFF', flatShading: true, roughness: 0.7 });
+    for (let k = -2; k <= 2; k++) {
+      const a = k * 0.3, seg = new Mesh(new BoxGeometry(0.46, 0.07, 0.5 - Math.abs(k) * 0.07), k === 0 ? whiteMat : wingMat);
+      seg.position.set(Math.sin(a) * 1.4, Math.cos(a) * 1.4 - 1.4, 0); seg.rotation.z = -a;
+      g.add(seg);
+    }
+    const pilot = new Mesh(new BoxGeometry(0.14, 0.26, 0.14), new MeshBasicMaterial({ color: '#33414E' }));
+    pilot.position.y = -1.15;
+    const lines = new Line(new BufferGeometry().setFromPoints([new Vector3(-0.78, -0.12, 0), new Vector3(0, -1.05, 0), new Vector3(0.78, -0.12, 0)]), new LineBasicMaterial({ color: '#33414E', transparent: true, opacity: 0.6 }));
+    g.add(pilot, lines);
+    g.userData = { cx, cy, cz, r, sp };
+    g.scale.setScalar(0.0001);
+    scene.add(g);
+    return g;
+  });
+
+  /* reflets du soleil sur le lac */
+  const GL = 90, glintPos = new Float32Array(GL * 3), glintSeed = [];
+  for (let i = 0, n = 0; n < GL && i < 8000; i++) {
+    const x = (rand() - 0.5) * 60, z = rand() * 60 - 18;
+    if (height(x, z) > 0.05) continue;
+    glintPos.set([x, 0.34, z], n * 3); glintSeed.push(rand() * 6.28); n++;
+  }
+  const glintGeo = new BufferGeometry();
+  glintGeo.setAttribute('position', new BufferAttribute(glintPos, 3));
+  const glintCol = new Float32Array(GL * 3);
+  glintGeo.setAttribute('color', new BufferAttribute(glintCol, 3));
+  const glints = new Points(glintGeo, new PointsMaterial({ size: 0.22, vertexColors: true, transparent: true, blending: AdditiveBlending, depthWrite: false }));
+  glints.visible = false;
+  scene.add(glints);
 
   /* nuages */
   const cloudMat = new MeshStandardMaterial({ color: '#FFFFFF', emissive: '#C9D6DE', emissiveIntensity: 0.75, flatShading: true, roughness: 1, fog: false });
@@ -224,7 +287,9 @@ function start(renderer) {
   const chips = Array.from(document.querySelectorAll('[data-build] li'));
   const altiN = document.querySelector('[data-alti-n]');
   const altiBar = document.querySelector('[data-alti-bar]');
-  let stage = -1, shownAlt = -1;
+  const altiZone = document.querySelector('[data-alti-zone]');
+  const ZONES = ['Vallée', 'Alpage', 'Glacier', 'Sommet'];
+  let stage = -1, shownAlt = -1, zone = -1;
   function setStage(n) {
     if (n === stage) return; stage = n;
     chips.forEach((li, i) => { li.classList.toggle('is-on', i <= n); li.classList.toggle('is-now', i === n); });
@@ -255,6 +320,17 @@ function start(renderer) {
     const fin = ease((t - 3.8) / 0.5);
     summit.scale.setScalar(Math.max(0.0001, fin)); cabin.scale.setScalar(Math.max(0.0001, fin)); cable.visible = fin > 0;
     setStage(t < 1.3 ? 0 : t < 2.2 ? 1 : t < 3.9 ? 2 : 3);
+    gliders.forEach((g) => {
+      const u = g.userData, a = (reduce ? 1 : t) * u.sp + u.cx;
+      g.position.set(u.cx + Math.cos(a) * u.r, u.cy + Math.sin(a * 2.3) * 0.5, u.cz + Math.sin(a) * u.r);
+      g.rotation.set(0, -a + (u.sp > 0 ? Math.PI : 0), u.sp > 0 ? -0.22 : 0.22, 'YXZ');
+      g.scale.setScalar(Math.max(0.0001, fin * 0.8));
+    });
+    glints.visible = t > 3 && !reduce;
+    if (glints.visible) {
+      for (let i = 0; i < glintSeed.length; i++) { const v = Math.pow(Math.max(0, Math.sin(t * 1.7 + glintSeed[i])), 6) * 0.9; glintCol[i * 3] = glintCol[i * 3 + 1] = glintCol[i * 3 + 2] = v; }
+      glintGeo.attributes.color.needsUpdate = true;
+    }
 
     /* ascension : le défilement de la page fait monter la caméra */
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -269,6 +345,9 @@ function start(renderer) {
 
     const alt = Math.round((560 + prog * (4478 - 560)) / 10) * 10;   // 4478 m : l'altitude du Cervin
     if (alt !== shownAlt && altiN) { shownAlt = alt; altiN.textContent = alt.toLocaleString('fr-CH'); if (altiBar) altiBar.style.transform = 'scaleY(' + Math.max(0.03, prog).toFixed(3) + ')'; }
+
+    const zn = prog < 0.22 ? 0 : prog < 0.56 ? 1 : prog < 0.94 ? 2 : 3;
+    if (zn !== zone) { zone = zn; if (altiZone) altiZone.textContent = ZONES[zn]; document.documentElement.classList.toggle('at-summit', zn === 3); }
 
     /* traversée de la mer de nuages vers les deux tiers de la montée, puis la neige */
     if (cloudpass) cloudpass.style.opacity = (Math.max(0, 1 - Math.abs(prog - 0.6) / 0.075) * 0.92).toFixed(3);

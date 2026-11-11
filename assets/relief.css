@@ -307,6 +307,23 @@ body.ascent{background:#DCEBF3}
 .marker span{font-size:clamp(64px,12vw,190px)}
 .hero-title{margin-bottom:6px}
 
+/* ---------- finitions ---------- */
+.hero-title .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.12em;margin-bottom:-.12em}
+.hero-title .w>span{display:inline-block;animation:wordUp .9s var(--ease) both}
+@keyframes wordUp{from{transform:translateY(105%) rotate(4deg)}to{transform:none}}
+.alti-txt em{display:block;margin-top:5px;font-style:normal;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
+/* arrivée au sommet : une pluie de confettis rouges et blancs */
+.confetti{position:fixed;inset:0;z-index:45;pointer-events:none;opacity:0;
+  background:
+    radial-gradient(circle at 50% 50%,var(--red) 0 3.5px,transparent 4.5px) 0 0/97px 131px,
+    radial-gradient(circle at 50% 50%,#fff 0 3.5px,transparent 4.5px) 41px 67px/113px 149px,
+    radial-gradient(ellipse 3px 7px at 50% 50%,var(--red) 0 98%,transparent) 61px 29px/151px 173px,
+    radial-gradient(ellipse 7px 3px at 50% 50%,#fff 0 98%,transparent) 17px 97px/167px 139px;
+  -webkit-mask:linear-gradient(#000,transparent 85%);mask:linear-gradient(#000,transparent 85%)}
+.at-summit .confetti{animation:confetti 2.6s linear both}
+@keyframes confetti{0%{opacity:0;background-position:0 -260px,41px -330px,61px -300px,17px -240px}12%{opacity:1}75%{opacity:1}100%{opacity:0;background-position:0 400px,41px 520px,61px 330px,17px 460px}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}}
+
 /* ---------- responsive ---------- */
 @media (max-width:980px){
   .steps{grid-template-columns:1fr}
@@ -326,6 +343,7 @@ body.ascent{background:#DCEBF3}
   .scroll-cue{font-size:13px;bottom:18px}
   .alti{right:10px;top:auto;bottom:14px;transform:none;flex-direction:row;padding:8px 12px}
   .alti-track{display:none}
+  .alti-txt em{display:none}
   .alti-txt b{display:inline;font-size:13px}
   .build{margin-top:18px;gap:6px}
   .build li{padding:6px 10px;font-size:12.5px}
