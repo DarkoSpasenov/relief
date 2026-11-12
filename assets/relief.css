@@ -307,22 +307,6 @@ body.ascent{background:#DCEBF3}
 .marker span{font-size:clamp(64px,12vw,190px)}
 .hero-title{margin-bottom:6px}
 
-/* ---------- accueil : la première réalisation dans un ordinateur ---------- */
-.hero-in{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:24px;align-items:start}
-.hero-sub{margin:0}
-.hero-cta{align-items:center;gap:14px 26px}
-.hero-device{margin-top:clamp(120px,24vh,250px);opacity:calc(1 - (var(--p) - .5) * 3.2);transform:translateY(calc((var(--p) - .5) * -120px))}
-.hero-float{display:grid;justify-items:center;gap:6px;animation:deviceIn 1.2s .8s var(--ease) both}
-.hero-device .laptop{--tilt:-15deg;width:100%;animation:float 7s ease-in-out infinite}
-.hero-tag{display:grid;gap:3px;padding:13px 22px 14px;border-radius:18px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 34px -22px rgba(15,27,38,.5);font-size:17px;color:var(--ink);transition:transform .35s var(--ease),background .35s}
-.hero-tag:hover{transform:translateY(-3px);background:rgba(255,255,255,.92)}
-.hero-tag small{font-size:15px;font-weight:600;color:var(--ink-2);letter-spacing:.04em}
-.hero-tag b{font-family:var(--display);font-weight:700}
-.hero-tag u{font-size:14.5px;font-weight:500;text-underline-offset:4px;color:var(--ink-2)}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-@keyframes deviceIn{from{opacity:0;transform:translateY(60px) scale(.94)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.hero-float,.hero-device .laptop{animation:none}}
-
 /* ---------- finitions ---------- */
 .hero-title .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.12em;margin-bottom:-.12em}
 .hero-title .w>span{display:inline-block;animation:wordUp .9s var(--ease) both}
@@ -351,11 +335,6 @@ body.ascent{background:#DCEBF3}
   .burger{display:block}
   .nav-in{height:58px;gap:12px}
   .hero{padding-top:104px;min-height:max(100svh,780px)}
-  .hero{padding-bottom:86px}
-  .hero-in{grid-template-columns:1fr;gap:0}
-  .hero-device{margin-top:34px}
-  .hero-device .laptop{--tilt:-12deg;padding:0 6% 13%}
-  .hero-tag{font-size:16px;padding:11px 18px 12px}
   .hero-copy::before{inset:-40px -30px -40px -30px}
   .hero-title{font-size:clamp(40px,11.5vw,56px);margin:14px 0 14px}
   .hero-cta{margin-top:22px}
