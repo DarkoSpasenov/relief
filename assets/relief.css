@@ -435,3 +435,41 @@ body.ascent{background:#DCEBF3}
 .pill-blue{background:rgba(127,195,221,.28);color:#1d5f7c}
 .guide:nth-of-type(3) .medal b{background:url("alpes-blanc.svg") bottom/100% 55% no-repeat,linear-gradient(180deg,#9FD0EA,#1d5f7c)}
 @media (max-width:760px){.guide-copy .pill{font-size:11px;padding:5px 10px;white-space:nowrap}}
+
+/* réalisations sur mobile : ordinateur plus petit, étiquette compacte sur une ligne */
+@media (max-width:760px){
+  .trail{gap:44px}
+  .climb,.climb:nth-child(even){gap:6px;justify-items:center}
+  .laptop,.climb:nth-child(even) .laptop{width:78%;padding:0 4% 9%;--tilt:-8deg}
+  .climb-copy,.climb:nth-child(even) .climb-copy{display:grid;grid-template-columns:auto auto;grid-template-areas:"name go" "what go";column-gap:14px;row-gap:0;align-items:center;justify-self:center;justify-items:start;text-align:left;width:auto;max-width:none;padding:8px 8px 8px 20px;border-radius:999px}
+  .climb-copy .summit{display:none}
+  .climb-copy h3{grid-area:name;font-size:19px;line-height:1.1}
+  .climb-copy .climb-what{grid-area:what;font-size:12.5px}
+  .climb-copy .link-arrow{grid-area:go;display:grid;place-items:center;width:40px;height:40px;margin:0;padding:0;border:0;border-radius:50%;background:var(--red);font-size:0;color:#fff}
+  .climb-copy .link-arrow::before{content:"↗";font-size:18px;font-weight:700}
+}
+
+/* téléphone posé devant l'ordinateur : version mobile du même site */
+.phone{position:absolute;z-index:3;right:-1%;bottom:2%;width:21%;padding:1.1%;border-radius:clamp(14px,2vw,26px);background:linear-gradient(160deg,#27323d,#0d141b);box-shadow:0 0 0 1.5px #3b4753 inset,0 34px 40px -18px rgba(15,45,70,.6);opacity:var(--e);transform:translateY(calc((1 - var(--e)) * 80px)) rotate(calc(var(--from,-1) * -4deg + (1 - var(--e)) * 8deg))}
+.climb:nth-child(even) .phone{right:auto;left:-1%}
+.phone img{display:block;width:100%;height:auto;aspect-ratio:600/1300;object-fit:cover;object-position:top;border-radius:clamp(10px,1.5vw,20px)}
+.phone::before{content:"";position:absolute;left:50%;top:5%;width:30%;height:3%;margin-left:-15%;border-radius:99px;background:#0d141b;z-index:1}
+@media (max-width:760px){
+  .laptop,.climb:nth-child(even) .laptop{width:100%;padding:0 12% 11% 2%}
+  .climb:nth-child(even) .laptop{padding:0 2% 11% 12%}
+  .phone{width:25%;right:1%;bottom:0}
+  .climb:nth-child(even) .phone{left:1%}
+}
+.contact-card .contact-48{color:var(--ink-2)}
+
+/* réalisations : ce que fait le client, puis le type de site */
+.climb-copy{max-width:300px}
+.climb-desc{margin:2px 0 0;font-size:14.5px;line-height:1.4;color:var(--ink-2)}
+.climb-copy .climb-what{margin:4px 0 2px}
+.climb-what .pill{font-size:12px;padding:4px 10px}
+@media (max-width:760px){
+  .climb-copy,.climb:nth-child(even) .climb-copy{grid-template-columns:1fr auto;grid-template-areas:"name go" "desc desc" "what what";row-gap:4px;padding:14px 14px 14px 18px;border-radius:22px;width:100%;max-width:340px}
+  .climb-copy .climb-desc{grid-area:desc;font-size:13.5px}
+  .climb-copy .climb-what{margin:2px 0 0}
+  .climb-copy .link-arrow{width:36px;height:36px}
+}
