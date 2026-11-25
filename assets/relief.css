@@ -418,12 +418,15 @@ body.ascent{background:#DCEBF3}
   .svc:nth-child(n){margin-top:0}
 }
 @media (max-width:760px){
-  .svcs{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .svc{padding:16px 14px 18px;border-radius:20px}
-  .svc p{font-size:13.5px}
-  .svc:last-child{grid-column:1/-1}
-  .svc svg{width:34px;height:34px}
-  .quote-pill{border-radius:22px}
+  /* mobile : une seule liste compacte, une ligne par type de site */
+  .svcs{grid-template-columns:1fr;gap:0;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);overflow:hidden}
+  .svc,.svc:nth-child(n){grid-template-columns:auto 1fr;column-gap:14px;row-gap:2px;align-items:center;margin:0;padding:14px 16px;border-radius:0;background:none;box-shadow:none;transform:translateX(calc((1 - var(--e)) * 40px))}
+  .svc+.svc{border-top:1px solid var(--line)}
+  .svc svg{grid-row:1/3;width:34px;height:34px;margin:0}
+  .svc h3{font-size:18px}
+  .svc p{font-size:13.5px;line-height:1.35}
+  .quote-pill{flex-wrap:nowrap;gap:10px;padding:10px 16px 10px 12px;font-size:16px;white-space:nowrap}
+  .quote-pill .link-arrow{font-size:14px}
   .qa summary{padding:14px 16px}
   .qa p{padding:0 16px 16px}
 }
