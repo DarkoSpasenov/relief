@@ -643,3 +643,13 @@ body.ascent{background:#DCEBF3}
   .contact .contact-card{scroll-margin-top:84px}
   .footer{scroll-snap-align:end}
 }
+
+/* flèche « remonter tout en haut », à côté de l'altimètre (26.11) */
+.to-top{position:fixed;z-index:41;right:22px;top:calc(50% + 140px);display:grid;place-items:center;width:46px;height:46px;padding:0;border:0;border-radius:50%;background:var(--ink);color:#fff;cursor:pointer;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .3s,transform .3s var(--ease),visibility 0s .3s,background .2s}
+.to-top.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .3s,transform .3s var(--ease),visibility 0s,background .2s}
+.to-top:hover{background:var(--red)}
+.to-top:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+@media (max-width:760px){
+  .alti{min-width:104px;justify-content:center}
+  .to-top{top:auto;right:122px;bottom:14px;width:42px;height:42px}
+}

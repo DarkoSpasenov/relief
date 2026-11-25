@@ -17,7 +17,19 @@
 
   /* ---------- navigation ---------- */
   var nav = document.querySelector('[data-nav]');
-  function onScroll() { if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 20); }
+  var toTop = document.querySelector('[data-to-top]');
+  function onScroll() {
+    if (nav) nav.classList.toggle('is-scrolled', window.scrollY > 20);
+    if (toTop) toTop.classList.toggle('is-on', window.scrollY > window.innerHeight * 0.6);
+  }
+  /* logo et flèche : retour tout en haut */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href="#top"], [data-to-top]');
+    if (!a) return;
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+  });
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
   var burger = document.querySelector('[data-burger]');
