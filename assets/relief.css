@@ -461,3 +461,15 @@ body.ascent{background:#DCEBF3}
   .climb:nth-child(even) .phone{left:1%}
 }
 .contact-card .contact-48{color:var(--ink-2)}
+
+/* réalisations : ce que fait le client, puis le type de site */
+.climb-copy{max-width:300px}
+.climb-desc{margin:2px 0 0;font-size:14.5px;line-height:1.4;color:var(--ink-2)}
+.climb-copy .climb-what{margin:4px 0 2px}
+.climb-what .pill{font-size:12px;padding:4px 10px}
+@media (max-width:760px){
+  .climb-copy,.climb:nth-child(even) .climb-copy{grid-template-columns:1fr auto;grid-template-areas:"name go" "desc desc" "what what";row-gap:4px;padding:14px 14px 14px 18px;border-radius:22px;width:100%;max-width:340px}
+  .climb-copy .climb-desc{grid-area:desc;font-size:13.5px}
+  .climb-copy .climb-what{margin:2px 0 0}
+  .climb-copy .link-arrow{width:36px;height:36px}
+}
