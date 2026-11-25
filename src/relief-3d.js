@@ -2,7 +2,7 @@
   RELIEF — paysage alpin 3D du hero (three.js)
   Source lisible. Le fichier servi est assets/relief-3d.min.js (voir README.txt pour le build).
   Un massif généré par du bruit, un sommet principal avec le drapeau suisse,
-  des sapins, un lac, des nuages et une télécabine.
+  des sapins, un lac, des nuages, une télécabine et la cathédrale Saint-Nicolas de Fribourg.
   1) À l'arrivée, la montagne se construit : fil de fer, volumes, couleurs.
   2) Le défilement de la page fait monter la caméra de la vallée jusqu'au sommet.
 */
@@ -122,12 +122,22 @@ function start(renderer) {
   scene.add(lake);
 
   /* sapins : ils poussent quand la couleur arrive à leur altitude */
+  /* emplacement de la cathédrale : le replat le plus plat près du lac, à gauche de la vue d'arrivée */
+  let cathSpot = null, best = Infinity;
+  for (let x = 4; x <= 8; x += 0.25) for (let z = -4; z <= 1; z += 0.25) {
+    const h = height(x, z);
+    if (h < 0.9 || h > 4.2) continue;
+    const slope = Math.abs(height(x + 1.6, z) - h) + Math.abs(height(x - 1.6, z) - h) + Math.abs(height(x, z + 1.6) - h) + Math.abs(height(x, z - 1.6) - h);
+    const score = slope * 4 + Math.hypot(x - 6, z + 2) * 0.3;
+    if (score < best) { best = score; cathSpot = [x, h, z]; }
+  }
   const spots = [];
   for (let i = 0; i < 9000 && spots.length < 1300; i++) {
     const x = (rand() - 0.5) * 110, z = rand() * 100 - 62;
     const h = height(x, z);
     if (h < 0.7 || h > 6.2) continue;
     if (Math.abs(height(x + 0.6, z) - h) > 0.42 || Math.abs(height(x, z + 0.6) - h) > 0.42) continue;
+    if (cathSpot && Math.hypot(cathSpot[0] - x, cathSpot[2] - z) < 3.6) continue;
     if (simplex.noise(x * 0.07 + 40, z * 0.07) < -0.05) continue;
     spots.push([x, h, z]);
   }
@@ -148,6 +158,40 @@ function start(renderer) {
   land.add(trees);
 
   /* chalets : bois sombre et toit rouge, posés sur les replats de la vallée */
+  /* cathédrale Saint-Nicolas de Fribourg : grande tour gothique carrée et nef, en molasse, au bord du lac */
+  const cathedral = new Group();
+  if (cathSpot) {
+    const stone = new MeshStandardMaterial({ color: '#B9B39C', flatShading: true, roughness: 1 });
+    const stoneDark = new MeshStandardMaterial({ color: '#8F8A76', flatShading: true, roughness: 1 });
+    const slate = new MeshStandardMaterial({ color: '#56636B', flatShading: true, roughness: 0.9 });
+    const add = (geo, mat, x, y, z, ry = 0) => { const m = new Mesh(geo, mat); m.position.set(x, y, z); m.rotation.y = ry; cathedral.add(m); return m; };
+    // nef et chœur
+    add(new BoxGeometry(1.15, 1.15, 3.1), stone, 0, 0.575, -1.9);
+    const nr = new ConeGeometry(0.95, 0.75, 4, 1); nr.rotateY(Math.PI / 4); nr.scale(0.86, 1, 2.35);
+    add(nr, slate, 0, 1.52, -1.9);
+    add(new BoxGeometry(0.55, 0.7, 2.7), stoneDark, 0.78, 0.35, -1.9);   // bas-côtés
+    add(new BoxGeometry(0.55, 0.7, 2.7), stoneDark, -0.78, 0.35, -1.9);
+    // la tour : trois étages qui s'affinent, puis la lanterne octogonale
+    add(new BoxGeometry(1.3, 2.4, 1.3), stone, 0, 1.2, 0);
+    add(new BoxGeometry(1.12, 1.5, 1.12), stone, 0, 3.15, 0);
+    add(new BoxGeometry(1.2, 0.12, 1.2), stoneDark, 0, 3.95, 0);
+    add(new CylinderGeometry(0.5, 0.56, 1.25, 8), stone, 0, 4.63, 0, Math.PI / 8);
+    add(new CylinderGeometry(0.58, 0.58, 0.1, 8), stoneDark, 0, 5.3, 0, Math.PI / 8);
+    // pinacles aux angles
+    const pin = new ConeGeometry(0.1, 0.62, 4);
+    for (const [px, pz] of [[-0.52, -0.52], [0.52, -0.52], [-0.52, 0.52], [0.52, 0.52]]) {
+      add(pin, stoneDark, px, 4.22, pz);
+      add(pin, stoneDark, px * 0.8, 5.62, pz * 0.8);
+    }
+    // portail (une ombre en arc sur la façade)
+    add(new BoxGeometry(0.42, 0.72, 0.06), new MeshStandardMaterial({ color: '#4A4A44', flatShading: true }), 0, 0.36, 0.66);
+    cathedral.userData.k = 0.85;
+    cathedral.scale.setScalar(0.85);
+    cathedral.position.set(cathSpot[0], cathSpot[1] - 0.05, cathSpot[2]);
+    cathedral.rotation.y = -1.15;   // la façade regarde vers la caméra et le lac
+    land.add(cathedral);
+  }
+
   const crand = rng(23), homes = [];
   for (let i = 0; i < 6000 && homes.length < 46; i++) {
     const x = (crand() - 0.5) * 70, z = crand() * 62 - 40;
@@ -155,6 +199,7 @@ function start(renderer) {
     if (h < 0.75 || h > 4.6) continue;
     if (Math.abs(height(x + 0.8, z) - h) > 0.22 || Math.abs(height(x, z + 0.8) - h) > 0.22 || Math.abs(height(x - 0.8, z) - h) > 0.22) continue;
     if (homes.some((o) => Math.hypot(o[0] - x, o[2] - z) < 2.6)) continue;
+    if (cathSpot && Math.hypot(cathSpot[0] - x, cathSpot[2] - z) < 3.2) continue;
     homes.push([x, h, z]);
   }
   const wallMat = new MeshStandardMaterial({ color: '#7A4A2B', flatShading: true, roughness: 1 });
@@ -324,7 +369,7 @@ function start(renderer) {
     const cl = ease((t - 3.0) / 0.9);
     clouds.forEach((g) => g.scale.setScalar(Math.max(0.0001, g.userData.s * cl)));
     const fin = ease((t - 3.8) / 0.5);
-    summit.scale.setScalar(Math.max(0.0001, fin)); cabin.scale.setScalar(Math.max(0.0001, fin)); cable.visible = fin > 0;
+    summit.scale.setScalar(Math.max(0.0001, fin)); cathedral.scale.setScalar(Math.max(0.0001, fin * (cathedral.userData.k || 1))); cabin.scale.setScalar(Math.max(0.0001, fin)); cable.visible = fin > 0;
     setStage(t < 1.3 ? 0 : t < 2.2 ? 1 : t < 3.9 ? 2 : 3);
     gliders.forEach((g) => {
       const u = g.userData, a = (reduce ? 1 : t) * u.sp + u.cx;
