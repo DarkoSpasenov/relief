@@ -473,3 +473,4 @@ body.ascent{background:#DCEBF3}
   .climb-copy .climb-what{margin:2px 0 0}
   .climb-copy .link-arrow{width:36px;height:36px}
 }
+.scroll-cue{opacity:calc(1 - (var(--p) - .5) * 5)}
