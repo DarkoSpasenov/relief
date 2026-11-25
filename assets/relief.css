@@ -637,8 +637,8 @@ body.ascent{background:#DCEBF3}
 }
 /* défilement écran par écran sur téléphone : accueil → sites 1-2 → sites 3-4 → services → … */
 @media (max-width:760px) and (prefers-reduced-motion:no-preference){
-  html{scroll-snap-type:y proximity}
-  .hero,.sommets,.climb:nth-child(3),.services,.studio,.method,.faq,.contact .contact-card,.footer{scroll-snap-align:start}
+  html{scroll-snap-type:y mandatory}
+  .hero,.sommets,.climb:nth-child(3),.services,.studio,.method,.faq,.contact .contact-card,.footer{scroll-snap-align:start;scroll-snap-stop:always}
   .climb:nth-child(3){scroll-margin-top:118px}
   .contact .contact-card{scroll-margin-top:84px}
   .footer{scroll-snap-align:end}
