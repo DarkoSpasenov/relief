@@ -618,13 +618,26 @@ body.ascent{background:#DCEBF3}
 .form input,.form textarea{background:rgba(255,255,255,.7)}
 .climb-desc,.v-d,.stage-txt,.qa p,.guide-copy p{color:var(--ink-2)}
 
-/* ---- Bleu lac : couleur de détail (26.11) ---- */
-:root{--lac:#2F86C8;--lac-dark:#1F6FB2;--lac-soft:rgba(31,111,178,.16)}
-.kicker{color:var(--lac-dark)}
-.kicker::before{background:linear-gradient(90deg,var(--red) 0 50%,var(--lac) 50% 100%);width:40px}
-.v-n,.stage-n{color:var(--lac-dark)}
-.stage-dot{border-color:var(--lac);box-shadow:0 0 0 5px var(--lac-soft)}
-.stage:nth-child(3) .stage-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 0 5px rgba(218,41,28,.14)}
-.route-line path{stroke:var(--lac-dark)}
-.voies-list a:hover .v-go{color:var(--lac-dark)}
-.climb-what .pill{border-color:var(--lac);background:var(--lac-soft);color:var(--ink)}
+/* ---- Bleu lac : effets (lueurs, reflets) — les textes gardent leurs couleurs (26.11) ---- */
+:root{--lac:#2F86C8;--lac-rgb:47,134,200}
+/* halo bleu lac derrière les titres de section */
+.ascent .sec-head{position:relative;isolation:isolate}
+.ascent .sec-head::before{content:"";position:absolute;z-index:-1;left:-6%;top:8%;width:min(620px,105%);height:115%;
+  background:radial-gradient(ellipse at 30% 55%,rgba(var(--lac-rgb),.55),rgba(var(--lac-rgb),.22) 45%,transparent 70%);
+  filter:blur(18px);opacity:var(--e,1);transform:scale(calc(.7 + var(--e,1) * .3));pointer-events:none}
+.kicker::before{background:linear-gradient(90deg,var(--red) 0 55%,var(--lac) 55% 100%);width:40px}
+/* reflet de lac dans les cases en verre */
+.climb-copy,.voies,.route,.qa,.guide,.contact-card{
+  background-image:radial-gradient(120% 80% at 0% 0%,rgba(var(--lac-rgb),.32),transparent 55%),
+                   radial-gradient(90% 70% at 100% 100%,rgba(var(--lac-rgb),.22),transparent 60%)!important;
+  box-shadow:0 24px 48px -28px rgba(15,45,70,.45),0 0 0 1px rgba(var(--lac-rgb),.35),0 22px 60px -26px rgba(var(--lac-rgb),.8)}
+/* lueur qui suit le survol sur les services */
+.voies-list a{position:relative;overflow:hidden}
+.voies-list a::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(var(--lac-rgb),.18) 50%,transparent 80%);transform:translateX(-100%);transition:transform .7s var(--ease);pointer-events:none}
+.voies-list a:hover::after{transform:translateX(100%)}
+/* sentier et étapes : lueur bleu lac qui respire */
+.route-line path{stroke:var(--lac);filter:drop-shadow(0 0 4px rgba(var(--lac-rgb),.7))}
+.stage-dot::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid rgba(var(--lac-rgb),.55);animation:lacPulse 2.6s ease-out infinite}
+.stage:nth-child(2) .stage-dot::after{animation-delay:.8s}.stage:nth-child(3) .stage-dot::after{animation-delay:1.6s}
+@keyframes lacPulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+@media (prefers-reduced-motion:reduce){.stage-dot::after{animation:none;opacity:.4}.voies-list a::after{display:none}}
