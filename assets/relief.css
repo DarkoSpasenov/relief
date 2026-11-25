@@ -618,13 +618,13 @@ body.ascent{background:#DCEBF3}
 .form input,.form textarea{background:rgba(255,255,255,.7)}
 .climb-desc,.v-d,.stage-txt,.qa p,.guide-copy p{color:var(--ink-2)}
 
-/* ---- Or des sommets : couleur de détail (26.11) ---- */
-:root{--gold:#F2B23A;--gold-dark:#A86F06;--gold-soft:rgba(242,178,58,.22)}
-.kicker{color:var(--gold-dark)}
-.kicker::before{background:linear-gradient(90deg,var(--red) 0 50%,var(--gold) 50% 100%);width:40px}
-.v-n,.stage-n{color:var(--gold-dark)}
-.stage-dot{border-color:var(--gold);box-shadow:0 0 0 5px var(--gold-soft)}
+/* ---- Bleu lac : couleur de détail (26.11) ---- */
+:root{--lac:#2F86C8;--lac-dark:#1F6FB2;--lac-soft:rgba(31,111,178,.16)}
+.kicker{color:var(--lac-dark)}
+.kicker::before{background:linear-gradient(90deg,var(--red) 0 50%,var(--lac) 50% 100%);width:40px}
+.v-n,.stage-n{color:var(--lac-dark)}
+.stage-dot{border-color:var(--lac);box-shadow:0 0 0 5px var(--lac-soft)}
 .stage:nth-child(3) .stage-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 0 5px rgba(218,41,28,.14)}
-.route-line path{stroke:var(--gold-dark)}
-.voies-list a:hover .v-go{color:var(--gold-dark)}
-.climb-what .pill{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
+.route-line path{stroke:var(--lac-dark)}
+.voies-list a:hover .v-go{color:var(--lac-dark)}
+.climb-what .pill{border-color:var(--lac);background:var(--lac-soft);color:var(--ink)}
