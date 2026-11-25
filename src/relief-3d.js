@@ -77,6 +77,12 @@ function start(renderer) {
   geo.rotateX(-Math.PI / 2);
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) pos.setY(i, height(pos.getX(i), pos.getZ(i)));
+  // le vrai point le plus haut du maillage facetté près du sommet (pour planter le drapeau dessus)
+  const peakV = new Vector3(PEAK.x, -Infinity, PEAK.z);
+  for (let i = 0; i < pos.count; i++) {
+    const dx = pos.getX(i) - PEAK.x, dz = pos.getZ(i) - PEAK.z;
+    if (dx * dx + dz * dz < 9 && pos.getY(i) > peakV.y) peakV.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+  }
   geo = geo.toNonIndexed();
   geo.computeVertexNormals();
   const P = geo.attributes.position, N = geo.attributes.normal;
@@ -166,12 +172,12 @@ function start(renderer) {
   land.add(walls, roofs);
 
   /* drapeau suisse au sommet */
-  const top = height(PEAK.x, PEAK.z);
+  const top = peakV.y;   // hauteur réelle du maillage au sommet
   const fc = document.createElement('canvas'); fc.width = fc.height = 64;
   const fx = fc.getContext('2d'); fx.fillStyle = '#DA291C'; fx.fillRect(0, 0, 64, 64); fx.fillStyle = '#fff'; fx.fillRect(26, 12, 12, 40); fx.fillRect(12, 26, 40, 12);
   const ftex = new CanvasTexture(fc); ftex.colorSpace = SRGBColorSpace;
   const summit = new Group();
-  summit.position.set(PEAK.x, top - 0.1, PEAK.z);
+  summit.position.set(peakV.x, peakV.y - 0.12, peakV.z);
   const pole = new Mesh(new CylinderGeometry(0.035, 0.035, 2.4, 6), new MeshBasicMaterial({ color: '#33414E' }));
   pole.position.y = 1.2;
   const flagGeo = new PlaneGeometry(1.25, 1.25, 8, 1);

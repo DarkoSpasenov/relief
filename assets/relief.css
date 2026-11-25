@@ -448,3 +448,15 @@ body.ascent{background:#DCEBF3}
   .climb-copy .link-arrow{grid-area:go;display:grid;place-items:center;width:40px;height:40px;margin:0;padding:0;border:0;border-radius:50%;background:var(--red);font-size:0;color:#fff}
   .climb-copy .link-arrow::before{content:"↗";font-size:18px;font-weight:700}
 }
+
+/* réalisations sur mobile : chaque site dans un téléphone, avec sa version mobile */
+@media (max-width:760px){
+  .laptop,.climb:nth-child(even) .laptop{width:min(56%,230px);padding:0 0 14px;--tilt:-12deg}
+  .climb:nth-child(even) .laptop{--tilt:12deg}
+  .laptop-base{display:none}
+  .laptop-lid{padding:9px;border-radius:34px;transform:rotateX(calc((1 - var(--e)) * -70deg));transform-origin:50% 100%;box-shadow:0 0 0 1.5px #3b4753 inset,0 40px 50px -24px rgba(15,45,70,.55)}
+  .laptop-lid::before{top:15px;width:54px;height:16px;margin-left:-27px;border-radius:99px;background:#0d141b;z-index:2}
+  .laptop-screen{border-radius:26px}
+  .laptop-screen img{aspect-ratio:600/1300}
+}
+.contact-card .contact-48{color:var(--ink-2)}
