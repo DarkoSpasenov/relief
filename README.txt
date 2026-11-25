@@ -22,7 +22,7 @@ AJOUTER UNE RÉALISATION
 1. Mettre la capture dans assets/work/nom.webp (1280×800).
 2. Dans index.html, section RÉALISATIONS, copier un bloc <article class="climb"> et changer
    le numéro du sommet, le nom, la catégorie, le texte, les liens et l'image.
-   (tytoo.ch attend encore sa capture : remplacer le bloc .shot-placeholder par une <img>.)
+   Captures prises à 1280×800 dans le navigateur, page d’accueil en haut.
 
 RECOMPILER LA SCÈNE 3D (seulement si src/relief-3d.js change)
 ------------------------------------------------------------

@@ -372,3 +372,61 @@ body.ascent{background:#DCEBF3}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   [data-scroll]{--e:1!important;--p:.5!important}
 }
+
+/* ==========================================================
+   ENRICHISSEMENT : services, détails des sites, délais, FAQ
+   ========================================================== */
+.climb-what{margin:0;font-size:14.5px;line-height:1.35}
+
+/* services : cinq petites cartes */
+.svcs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,1.4vw,16px)}
+.svc{position:relative;display:grid;gap:8px;align-content:start;padding:20px 18px 22px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);opacity:var(--e);transform:perspective(900px) translateY(calc((1 - var(--e)) * 90px)) rotateX(calc(var(--rx) + (1 - var(--e)) * 22deg)) rotateY(var(--ry));transition:transform .25s linear}
+.svc:nth-child(2){margin-top:22px}.svc:nth-child(3){margin-top:44px}.svc:nth-child(4){margin-top:22px}
+.svc svg{width:42px;height:42px;margin-bottom:6px}
+.svc h3{font-size:clamp(19px,1.6vw,23px);line-height:1.08}
+.svc p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.45}
+.quote-pill{display:inline-flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:clamp(22px,3vw,34px) 0 0;padding:12px 22px 12px 16px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);font-family:var(--display);font-weight:700;font-size:clamp(17px,1.6vw,21px);opacity:var(--e);transform:translateY(calc((1 - var(--e)) * 40px))}
+.quote-pill .link-arrow{font-family:var(--sans);font-size:15px;margin:0}
+
+/* méthode : le délai sous chaque étape */
+.step{grid-template-columns:auto auto 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:0;border-radius:26px}
+.step-ico{grid-row:1/3}
+.step-n{grid-row:1/3}
+.step h3{grid-column:3}
+.step-t{grid-column:3;font-size:13.5px;font-weight:600;color:var(--fir)}
+
+/* FAQ : questions repliables */
+.qas{display:grid;gap:10px;max-width:760px}
+.qa{border-radius:22px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);opacity:var(--e);transform:translateY(calc((1 - var(--e)) * 50px))}
+.qa summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;font-family:var(--display);font-weight:700;font-size:clamp(17px,1.5vw,20px);letter-spacing:-.02em}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"";flex:none;width:28px;height:28px;border-radius:50%;background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M9 14h10M14 9v10' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/100% no-repeat;transition:transform .35s var(--ease)}
+.qa[open] summary::after{transform:rotate(45deg)}
+.qa p{margin:0;padding:0 20px 18px;color:var(--muted);font-size:15.5px;max-width:60ch}
+
+/* témoignages (prêts, désactivés tant qu'il n'y a pas de citations) */
+.quotes-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.quote{margin:0;padding:22px 24px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow)}
+.quote blockquote{margin:0 0 12px;font-family:var(--display);font-weight:700;font-size:clamp(19px,1.8vw,24px);line-height:1.2;letter-spacing:-.02em}
+.quote figcaption{font-size:14px;color:var(--muted)}
+
+/* contact */
+.contact-48{display:flex;align-items:center;gap:8px;width:100%;margin:0;font-size:14px;font-weight:600;color:var(--ink-2)}
+
+@media (max-width:1100px){
+  .svcs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .svc:nth-child(n){margin-top:0}
+}
+@media (max-width:760px){
+  /* mobile : une seule liste compacte, une ligne par type de site */
+  .svcs{grid-template-columns:1fr;gap:0;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);overflow:hidden}
+  .svc,.svc:nth-child(n){grid-template-columns:auto 1fr;column-gap:14px;row-gap:2px;align-items:center;margin:0;padding:14px 16px;border-radius:0;background:none;box-shadow:none;transform:translateX(calc((1 - var(--e)) * 40px))}
+  .svc+.svc{border-top:1px solid var(--line)}
+  .svc svg{grid-row:1/3;width:34px;height:34px;margin:0}
+  .svc h3{font-size:18px}
+  .svc p{font-size:13.5px;line-height:1.35}
+  .quote-pill{flex-wrap:nowrap;gap:10px;padding:10px 16px 10px 12px;font-size:16px;white-space:nowrap}
+  .quote-pill .link-arrow{font-size:14px}
+  .qa summary{padding:14px 16px}
+  .qa p{padding:0 16px 16px}
+}
