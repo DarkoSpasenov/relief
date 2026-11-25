@@ -635,13 +635,10 @@ body.ascent{background:#DCEBF3}
   .climb-copy .link-arrow{width:32px;height:32px}
   .climb:nth-child(3){padding-top:0}
 }
-/* défilement écran par écran sur téléphone : accueil → sites 1-2 → sites 3-4 → services → … */
+/* défilement écran par écran sur téléphone : les points d'arrêt sont posés et centrés par relief-ui.js */
 @media (max-width:760px) and (prefers-reduced-motion:no-preference){
   html{scroll-snap-type:y mandatory}
-  .hero,.sommets,.climb:nth-child(3),.services,.studio,.method,.faq,.contact .contact-card,.footer{scroll-snap-align:start;scroll-snap-stop:always}
-  .climb:nth-child(3){scroll-margin-top:118px}
-  .contact .contact-card{scroll-margin-top:84px}
-  .footer{scroll-snap-align:end}
+  .snap-pt{scroll-snap-align:start;scroll-snap-stop:always}
 }
 
 /* flèche « remonter tout en haut », à côté de l'altimètre (26.11) */
