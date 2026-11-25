@@ -358,26 +358,27 @@ function start(renderer) {
     raf = 0;
     const t = reduce ? 99 : frozen !== null ? frozen : (now - t0) / 1000;
 
-    /* construction */
-    land.scale.y = 0.02 + 0.98 * ease(t / 1.3);
-    wire.material.opacity = 0.6 * (1 - ease((t - 1.5) / 1.1));
+    /* construction (accélérée : ~1,8 s au lieu de 4,3 s) */
+    const b = frozen !== null ? t : t * 2.4;
+    land.scale.y = 0.02 + 0.98 * ease(b / 1.3);
+    wire.material.opacity = 0.6 * (1 - ease((b - 1.5) / 1.1));
     wire.visible = wire.material.opacity > 0.01;
-    if (t > 1.2) solid.visible = true;
-    if (landMat.transparent) { landMat.opacity = ease((t - 1.2) / 0.9); if (landMat.opacity >= 1) { landMat.transparent = false; landMat.needsUpdate = true; } }
-    reveal.value = -3 + 40 * MathUtils.clamp((t - 2.2) / 1.7, 0, 1);
-    lake.material.opacity = 0.92 * ease((t - 2.2) / 0.8);
-    const cl = ease((t - 3.0) / 0.9);
+    if (b > 1.2) solid.visible = true;
+    if (landMat.transparent) { landMat.opacity = ease((b - 1.2) / 0.9); if (landMat.opacity >= 1) { landMat.transparent = false; landMat.needsUpdate = true; } }
+    reveal.value = -3 + 40 * MathUtils.clamp((b - 2.2) / 1.7, 0, 1);
+    lake.material.opacity = 0.92 * ease((b - 2.2) / 0.8);
+    const cl = ease((b - 3.0) / 0.9);
     clouds.forEach((g) => g.scale.setScalar(Math.max(0.0001, g.userData.s * cl)));
-    const fin = ease((t - 3.8) / 0.5);
+    const fin = ease((b - 3.8) / 0.5);
     summit.scale.setScalar(Math.max(0.0001, fin)); cathedral.scale.setScalar(Math.max(0.0001, fin * (cathedral.userData.k || 1))); cabin.scale.setScalar(Math.max(0.0001, fin)); cable.visible = fin > 0;
-    setStage(t < 1.3 ? 0 : t < 2.2 ? 1 : t < 3.9 ? 2 : 3);
+    setStage(b < 1.3 ? 0 : b < 2.2 ? 1 : b < 3.9 ? 2 : 3);
     gliders.forEach((g) => {
       const u = g.userData, a = (reduce ? 1 : t) * u.sp + u.cx;
       g.position.set(u.cx + Math.cos(a) * u.r, u.cy + Math.sin(a * 2.3) * 0.5, u.cz + Math.sin(a) * u.r);
       g.rotation.set(0, -a + (u.sp > 0 ? Math.PI : 0), u.sp > 0 ? -0.22 : 0.22, 'YXZ');
       g.scale.setScalar(Math.max(0.0001, fin * 0.8));
     });
-    glints.visible = t > 3 && !reduce;
+    glints.visible = b > 3 && !reduce;
     if (glints.visible) {
       for (let i = 0; i < glintSeed.length; i++) { const v = Math.pow(Math.max(0, Math.sin(t * 1.7 + glintSeed[i])), 6) * 0.9; glintCol[i * 3] = glintCol[i * 3 + 1] = glintCol[i * 3 + 2] = v; }
       glintGeo.attributes.color.needsUpdate = true;
