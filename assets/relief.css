@@ -449,14 +449,15 @@ body.ascent{background:#DCEBF3}
   .climb-copy .link-arrow::before{content:"↗";font-size:18px;font-weight:700}
 }
 
-/* réalisations sur mobile : chaque site dans un téléphone, avec sa version mobile */
+/* téléphone posé devant l'ordinateur : version mobile du même site */
+.phone{position:absolute;z-index:3;right:-1%;bottom:2%;width:21%;padding:1.1%;border-radius:clamp(14px,2vw,26px);background:linear-gradient(160deg,#27323d,#0d141b);box-shadow:0 0 0 1.5px #3b4753 inset,0 34px 40px -18px rgba(15,45,70,.6);opacity:var(--e);transform:translateY(calc((1 - var(--e)) * 80px)) rotate(calc(var(--from,-1) * -4deg + (1 - var(--e)) * 8deg))}
+.climb:nth-child(even) .phone{right:auto;left:-1%}
+.phone img{display:block;width:100%;height:auto;aspect-ratio:600/1300;object-fit:cover;object-position:top;border-radius:clamp(10px,1.5vw,20px)}
+.phone::before{content:"";position:absolute;left:50%;top:5%;width:30%;height:3%;margin-left:-15%;border-radius:99px;background:#0d141b;z-index:1}
 @media (max-width:760px){
-  .laptop,.climb:nth-child(even) .laptop{width:min(56%,230px);padding:0 0 14px;--tilt:-12deg}
-  .climb:nth-child(even) .laptop{--tilt:12deg}
-  .laptop-base{display:none}
-  .laptop-lid{padding:9px;border-radius:34px;transform:rotateX(calc((1 - var(--e)) * -70deg));transform-origin:50% 100%;box-shadow:0 0 0 1.5px #3b4753 inset,0 40px 50px -24px rgba(15,45,70,.55)}
-  .laptop-lid::before{top:15px;width:54px;height:16px;margin-left:-27px;border-radius:99px;background:#0d141b;z-index:2}
-  .laptop-screen{border-radius:26px}
-  .laptop-screen img{aspect-ratio:600/1300}
+  .laptop,.climb:nth-child(even) .laptop{width:100%;padding:0 12% 11% 2%}
+  .climb:nth-child(even) .laptop{padding:0 2% 11% 12%}
+  .phone{width:25%;right:1%;bottom:0}
+  .climb:nth-child(even) .phone{left:1%}
 }
 .contact-card .contact-48{color:var(--ink-2)}
