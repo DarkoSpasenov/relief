@@ -617,3 +617,14 @@ body.ascent{background:#DCEBF3}
 .voies-foot{background:rgba(15,27,38,.72)}
 .form input,.form textarea{background:rgba(255,255,255,.7)}
 .climb-desc,.v-d,.stage-txt,.qa p,.guide-copy p{color:var(--ink-2)}
+
+/* ---- Or des sommets : couleur de détail (26.11) ---- */
+:root{--gold:#F2B23A;--gold-dark:#A86F06;--gold-soft:rgba(242,178,58,.22)}
+.kicker{color:var(--gold-dark)}
+.kicker::before{background:linear-gradient(90deg,var(--red) 0 50%,var(--gold) 50% 100%);width:40px}
+.v-n,.stage-n{color:var(--gold-dark)}
+.stage-dot{border-color:var(--gold);box-shadow:0 0 0 5px var(--gold-soft)}
+.stage:nth-child(3) .stage-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 0 5px rgba(218,41,28,.14)}
+.route-line path{stroke:var(--gold-dark)}
+.voies-list a:hover .v-go{color:var(--gold-dark)}
+.climb-what .pill{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
