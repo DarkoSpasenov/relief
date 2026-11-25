@@ -21,10 +21,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/relief.css?v=20261126d">
-<script defer src="site-config.js?v=20261126d"></script>
-<script defer src="assets/relief-ui.js?v=20261126d"></script>
-<script type="module" src="assets/relief-3d.min.js?v=20261126d"></script>
+<link rel="stylesheet" href="assets/relief.css?v=20261126e">
+<script defer src="site-config.js?v=20261126e"></script>
+<script defer src="assets/relief-ui.js?v=20261126e"></script>
+<script type="module" src="assets/relief-3d.min.js?v=20261126e"></script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"ProfessionalService","@id":"https://darkospasenov.github.io/relief/#studio","name":"Relief","description":"Studio web suisse : création de sites internet sur mesure à Fribourg.","url":"https://darkospasenov.github.io/relief/","logo":"https://darkospasenov.github.io/relief/assets/favicon.png","image":"https://darkospasenov.github.io/relief/assets/og-image.jpg","email":"info@ds-digital.ch","address":{"@type":"PostalAddress","streetAddress":"Route de Lossy 39","postalCode":"1782","addressLocality":"Belfaux","addressRegion":"FR","addressCountry":"CH"},"areaServed":[{"@type":"AdministrativeArea","name":"Canton de Fribourg"},{"@type":"Country","name":"Suisse"}],"knowsLanguage":"fr","founder":{"@type":"Person","name":"Darko Spasenov"},"employee":[{"@type":"Person","name":"Darko Spasenov","jobTitle":"Fondateur et créateur de site web"},{"@type":"Person","name":"Boris Stankovski","jobTitle":"Créateur de site web"},{"@type":"Person","name":"Maik Haufschmid","jobTitle":"Responsable commercial"}],
@@ -226,34 +226,46 @@
         <h2 class="sec-title">La <em>cordée</em></h2>
       </div>
 
-      <!-- La cordée : trois membres encordés, la corde monte de gauche à droite -->
-      <div class="team" data-scroll>
-        <svg class="team-rope" viewBox="0 0 100 170" preserveAspectRatio="none" aria-hidden="true"><path d="M16.7 162 C 30 140, 38 110, 50 97 S 72 50, 83.3 32"/></svg>
-        <article class="mate" data-scroll>
-          <div class="mate-pic">
+      <!-- La cordée : deux créateurs reliés par une corde qui se déroule au défilement -->
+      <div class="cordee" data-scroll>
+        <svg class="rope" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M8 12 C 8 40, 60 22, 92 46 S 8 62, 8 88"/><path class="twist" d="M8 12 C 8 40, 60 22, 92 46 S 8 62, 8 88"/></svg>
+
+        <article class="guide" data-scroll>
+          <div class="medal">
+            <span class="medal-ring" aria-hidden="true"></span>
             <img src="assets/darko-portrait-600.webp" alt="Darko Spasenov" width="600" height="750" loading="lazy" decoding="async">
-            <i class="mate-clip" aria-hidden="true"></i>
+            <span class="medal-n" aria-hidden="true">01</span>
           </div>
-          <p class="mate-role">Fondateur et créateur de site web</p>
-          <h3 class="mate-name">Darko <span>Spasenov</span></h3>
+          <div class="guide-copy">
+            <span class="pill pill-red">Fondateur et créateur de site web</span>
+            <h3 class="guide-name"><span>Darko</span> <span class="out">Spasenov</span></h3>
+          </div>
         </article>
-        <article class="mate" data-scroll>
-          <div class="mate-pic">
-            <!-- Photo à venir : remplacer le <b> par une <img> -->
+
+        <article class="guide guide-b" data-scroll>
+          <div class="medal medal-mono">
+            <span class="medal-ring" aria-hidden="true"></span>
+            <!-- Photo à venir : remplacer le <b> par <img src="assets/boris-portrait.webp" alt="Boris Stankovski" …> -->
             <b aria-hidden="true">BS</b>
-            <i class="mate-clip" aria-hidden="true"></i>
+            <span class="medal-n" aria-hidden="true">02</span>
           </div>
-          <p class="mate-role">Créateur de site web</p>
-          <h3 class="mate-name">Boris <span>Stankovski</span></h3>
+          <div class="guide-copy">
+            <span class="pill pill-green">Créateur de site web</span>
+            <h3 class="guide-name"><span>Boris</span> <span class="out">Stankovski</span></h3>
+          </div>
         </article>
-        <article class="mate" data-scroll>
-          <div class="mate-pic">
-            <!-- Photo à venir : remplacer le <b> par une <img> -->
+
+        <article class="guide" data-scroll>
+          <div class="medal medal-mono">
+            <span class="medal-ring" aria-hidden="true"></span>
+            <!-- Photo à venir : remplacer le <b> par <img src="assets/maik-portrait.webp" alt="Maik Haufschmid" …> -->
             <b aria-hidden="true">MH</b>
-            <i class="mate-clip" aria-hidden="true"></i>
+            <span class="medal-n" aria-hidden="true">03</span>
           </div>
-          <p class="mate-role">Responsable commercial</p>
-          <h3 class="mate-name">Maik <span>Haufschmid</span></h3>
+          <div class="guide-copy">
+            <span class="pill pill-blue">Responsable commercial</span>
+            <h3 class="guide-name"><span>Maik</span> <span class="out">Haufschmid</span></h3>
+          </div>
         </article>
       </div>
     </div>

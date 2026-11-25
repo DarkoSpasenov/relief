@@ -604,3 +604,16 @@ body.ascent{background:#DCEBF3}
   .mate-clip{top:-4px}
 }
 @media (max-width:760px){.hero-work{margin-bottom:44px}}
+
+/* cases presque transparentes : on voit les montagnes derrière (verre dépoli léger) */
+.climb-copy,.voies,.route,.qa,.guide,.guide-b,.contact-card,.ascent .footer-in,.quote,.hero-work-label{
+  background:rgba(255,255,255,.38)!important;
+  -webkit-backdrop-filter:blur(8px) saturate(1.3);backdrop-filter:blur(8px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 24px 48px -28px rgba(15,45,70,.45)}
+.climb-copy{border-top:4px solid var(--red)}
+.voies-list li+li a{border-top-color:rgba(15,27,38,.1)}
+.voies-list a:hover{background:rgba(255,255,255,.45)}
+.voies-foot{background:rgba(15,27,38,.72)}
+.form input,.form textarea{background:rgba(255,255,255,.7)}
+.climb-desc,.v-d,.stage-txt,.qa p,.guide-copy p{color:var(--ink-2)}
