@@ -435,3 +435,16 @@ body.ascent{background:#DCEBF3}
 .pill-blue{background:rgba(127,195,221,.28);color:#1d5f7c}
 .guide:nth-of-type(3) .medal b{background:url("alpes-blanc.svg") bottom/100% 55% no-repeat,linear-gradient(180deg,#9FD0EA,#1d5f7c)}
 @media (max-width:760px){.guide-copy .pill{font-size:11px;padding:5px 10px;white-space:nowrap}}
+
+/* réalisations sur mobile : ordinateur plus petit, étiquette compacte sur une ligne */
+@media (max-width:760px){
+  .trail{gap:44px}
+  .climb,.climb:nth-child(even){gap:6px;justify-items:center}
+  .laptop,.climb:nth-child(even) .laptop{width:78%;padding:0 4% 9%;--tilt:-8deg}
+  .climb-copy,.climb:nth-child(even) .climb-copy{display:grid;grid-template-columns:auto auto;grid-template-areas:"name go" "what go";column-gap:14px;row-gap:0;align-items:center;justify-self:center;justify-items:start;text-align:left;width:auto;max-width:none;padding:8px 8px 8px 20px;border-radius:999px}
+  .climb-copy .summit{display:none}
+  .climb-copy h3{grid-area:name;font-size:19px;line-height:1.1}
+  .climb-copy .climb-what{grid-area:what;font-size:12.5px}
+  .climb-copy .link-arrow{grid-area:go;display:grid;place-items:center;width:40px;height:40px;margin:0;padding:0;border:0;border-radius:50%;background:var(--red);font-size:0;color:#fff}
+  .climb-copy .link-arrow::before{content:"↗";font-size:18px;font-weight:700}
+}
