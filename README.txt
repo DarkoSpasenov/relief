@@ -38,3 +38,9 @@ dans la section STUDIO par une <img>, comme pour Darko.
 MISE EN LIGNE
 -------------
 GitHub Pages : Settings > Pages > branche main, dossier racine.
+
+CACHE DES NAVIGATEURS
+---------------------
+Après chaque modification de relief.css ou des .js, changer le ?v=AAAAMMJJ dans les balises
+<link>/<script> en haut de index.html (et des pages légales pour le CSS), sinon les visiteurs
+gardent l'ancienne version en cache.
