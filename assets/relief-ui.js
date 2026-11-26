@@ -26,10 +26,35 @@
   var snapMq = window.matchMedia('(max-width: 760px) and (prefers-reduced-motion: no-preference)');
   function docTop(el) { var y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; }
   function q(s) { return document.querySelector(s); }
+  /* hauteur fixe (barre d'adresse iPhone visible) : évite que les arrêts bougent quand la barre se replie */
+  var probe;
+  function stableH() {
+    if (!probe) { probe = document.createElement('div'); probe.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:100svh;visibility:hidden;pointer-events:none'; document.body.appendChild(probe); }
+    return probe.offsetHeight || window.innerHeight;
+  }
+  var lastW = window.innerWidth;
+  /* téléphone : la montée de la caméra 3D suit les écrans (même position du sommet sur tous les téléphones) */
+  var snapYs = [];
+  window.reliefProg = function () {
+    if (!snapMq.matches || snapYs.length < 2) return null;
+    var n = snapYs.length - 1, end = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    /* chaque écran a sa hauteur de caméra ; le contact (dernier écran) s'arrête juste sous le sommet, le bas de page l'atteint */
+    var ys = snapYs.concat([Math.max(end, snapYs[n] + 1)]);
+    var fr = snapYs.map(function (_, i) { return i < n ? i / n : 0.93; });
+    fr.push(1);
+    var y = window.scrollY;
+    if (y <= ys[0]) return 0;
+    for (var i = 0; i < ys.length - 1; i++) {
+      if (y < ys[i + 1]) return fr[i] + (fr[i + 1] - fr[i]) * (y - ys[i]) / Math.max(1, ys[i + 1] - ys[i]);
+    }
+    return 1;
+  };
   function layoutSnaps() {
     document.querySelectorAll('.snap-pt').forEach(function (el) { el.classList.remove('snap-pt'); el.style.scrollMarginTop = ''; });
+    snapYs = [];
+    var faqHead = q('#faq .sec-head'); if (faqHead) faqHead.style.marginBottom = '';
     if (!snapMq.matches) return;
-    var navH = 76, vh = window.innerHeight, avail = vh - navH;
+    var navH = 76, vh = stableH(), avail = vh - navH;
     var climbs = document.querySelectorAll('.climb');
     var groups = [
       [q('.sommets .sec-head'), climbs[1]],
@@ -38,15 +63,24 @@
       [q('.contact .contact-card')]
     ];
     var hero = q('.hero'); if (hero) { hero.classList.add('snap-pt'); hero.style.scrollMarginTop = '0px'; }
+    snapYs = [0];
     groups.forEach(function (g) {
       var a = g[0], b = g[g.length - 1]; if (!a || !b) return;
       var h = docTop(b) + b.offsetHeight - docTop(a);
       var m = navH + Math.max(12, (avail - h) / 2);
+      /* FAQ : titre collé sous le menu, questions en bas, le drapeau du sommet reste visible entre les deux */
+      if (faqHead && a === q('#faq .wrap') && avail - h > 40) {
+        faqHead.style.marginBottom = Math.round(parseFloat(getComputedStyle(faqHead).marginBottom) + avail - h - 100) + "px";
+        m = navH + 12;
+      }
+      /* contact : la carte descend en bas de l'écran, le drapeau du sommet reste visible au-dessus */
+      if (a === q('.contact .contact-card')) m = navH + Math.max(12, avail - h - 20);
       a.classList.add('snap-pt'); a.style.scrollMarginTop = Math.round(m) + 'px';
+      snapYs.push(docTop(a) - Math.round(m));
     });
   }
   var snapT; function askSnaps() { clearTimeout(snapT); snapT = setTimeout(layoutSnaps, 120); }
-  window.addEventListener('resize', askSnaps); window.addEventListener('load', layoutSnaps);
+  window.addEventListener('resize', function () { if (window.innerWidth !== lastW) { lastW = window.innerWidth; askSnaps(); } }); window.addEventListener('load', layoutSnaps);
   if (snapMq.addEventListener) snapMq.addEventListener('change', layoutSnaps);
   document.querySelectorAll('img').forEach(function (im) { if (!im.complete) im.addEventListener('load', askSnaps); });
   layoutSnaps();
