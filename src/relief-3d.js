@@ -385,8 +385,9 @@ function start(renderer) {
     }
 
     /* ascension : le défilement de la page fait monter la caméra */
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const target = max > 0 ? MathUtils.clamp(window.scrollY / max / 0.9, 0, 1) : 0;   // sommet atteint un peu avant le bas de page
+    const max = document.documentElement.scrollHeight - document.documentElement.clientHeight;   // stable quand la barre d'iPhone se replie
+    const rp = window.reliefProg ? window.reliefProg() : null;   // téléphone : la caméra suit les écrans
+    const target = rp !== null ? rp : max > 0 ? MathUtils.clamp(window.scrollY / max / 0.9, 0, 1) : 0;   // sommet atteint un peu avant le bas de page
     prog = prog < 0 || reduce ? target : prog + (target - prog) * 0.07;
     eased.x += (pointer.x - eased.x) * 0.04; eased.y += (pointer.y - eased.y) * 0.04;
     path.pos.getPoint(prog, camPos); path.look.getPoint(prog, camLook);
