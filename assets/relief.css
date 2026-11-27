@@ -158,7 +158,8 @@ body.ascent{background:#DCEBF3}
 /* ordinateur portable en CSS 3D : fermé, puis il s'ouvre à l'arrivée */
 .laptop{--tilt:-17deg;display:block;perspective:2400px;padding:0 6% 11%;position:relative;z-index:1}
 .climb:nth-child(even) .laptop{--tilt:17deg;--from:1}
-.laptop-3d{position:relative;display:block;transform-style:preserve-3d;transform:translateX(calc((1 - var(--e)) * var(--from,-1) * 90px)) rotateX(calc(7deg + var(--my,0deg))) rotateY(calc(var(--tilt) * (1.9 - .9 * var(--e)) + var(--mx,0deg)));transition:transform .25s linear}
+.laptop-3d{position:relative;display:block;transform-style:preserve-3d;transform:translateX(calc((1 - var(--e)) * var(--from,-1) * 90px)) rotateX(calc(7deg + var(--my,0deg))) rotateY(calc(var(--tilt) * (1.9 - .9 * var(--e)) + var(--mx,0deg)))}
+.laptop:hover .laptop-3d{transition:transform .25s linear}
 .laptop-lid{position:relative;display:block;padding:2.4% 2.4% 3%;border-radius:18px 18px 4px 4px;background:linear-gradient(160deg,#27323d,#0d141b);box-shadow:0 0 0 1.5px #3b4753 inset;transform-origin:50% 100%;transform:rotateX(calc((1 - var(--e)) * -89deg));backface-visibility:hidden}
 .laptop-lid::before{content:"";position:absolute;left:50%;top:1.1%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#3d4b58}
 .laptop-screen{position:relative;display:block;overflow:hidden;border-radius:6px;background:#0d141b}
@@ -215,7 +216,7 @@ body.ascent{background:#DCEBF3}
 
 /* ---------- méthode : l'ascension ---------- */
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.4vw,28px);align-items:start}
-.step{position:relative;padding:30px 28px 32px;border-radius:28px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);opacity:var(--e);transform:perspective(900px) translateY(calc((1 - var(--e)) * 120px)) rotateX(calc(var(--rx) + (1 - var(--e)) * 28deg)) rotateY(var(--ry));transition:transform .25s linear}
+.step{position:relative;padding:30px 28px 32px;border-radius:28px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);opacity:var(--e);transform:perspective(900px) translateY(calc((1 - var(--e)) * 120px)) rotateX(calc(var(--rx) + (1 - var(--e)) * 28deg)) rotateY(var(--ry))}
 /* les étapes montent comme un sentier */
 .step:nth-child(1){margin-top:90px}.step:nth-child(2){margin-top:45px}
 .step-ico{width:60px;height:60px}
@@ -380,7 +381,7 @@ body.ascent{background:#DCEBF3}
 
 /* services : cinq petites cartes */
 .svcs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,1.4vw,16px)}
-.svc{position:relative;display:grid;gap:8px;align-content:start;padding:20px 18px 22px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);opacity:var(--e);transform:perspective(900px) translateY(calc((1 - var(--e)) * 90px)) rotateX(calc(var(--rx) + (1 - var(--e)) * 22deg)) rotateY(var(--ry));transition:transform .25s linear}
+.svc{position:relative;display:grid;gap:8px;align-content:start;padding:20px 18px 22px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);opacity:var(--e);transform:perspective(900px) translateY(calc((1 - var(--e)) * 90px)) rotateX(calc(var(--rx) + (1 - var(--e)) * 22deg)) rotateY(var(--ry))}
 .svc:nth-child(2){margin-top:22px}.svc:nth-child(3){margin-top:44px}.svc:nth-child(4){margin-top:22px}
 .svc svg{width:42px;height:42px;margin-bottom:6px}
 .svc h3{font-size:clamp(19px,1.6vw,23px);line-height:1.08}
@@ -638,7 +639,7 @@ body.ascent{background:#DCEBF3}
 /* défilement écran par écran sur téléphone : les points d'arrêt sont posés et centrés par relief-ui.js */
 @media (max-width:760px) and (prefers-reduced-motion:no-preference){
   html{scroll-snap-type:y mandatory}
-  .snap-pt{scroll-snap-align:start;scroll-snap-stop:always}
+  .snap-mark{position:absolute;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden;scroll-snap-align:start;scroll-snap-stop:always}
 }
 
 /* flèche « remonter tout en haut », à côté de l'altimètre (26.11) */
@@ -650,3 +651,6 @@ body.ascent{background:#DCEBF3}
   .alti{min-width:104px;justify-content:center}
   .to-top{top:auto;right:122px;bottom:14px;width:42px;height:42px}
 }
+
+/* survol à la souris : léger amorti sur l'inclinaison des cartes (jamais pendant le défilement) */
+@media (hover:hover) and (pointer:fine){.step:hover,.svc:hover{transition:transform .25s linear}}

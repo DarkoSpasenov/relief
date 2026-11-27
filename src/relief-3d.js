@@ -347,7 +347,8 @@ function start(renderer) {
   }
 
   /* ---------- boucle ---------- */
-  let raf = 0, prog = -1;
+  let raf = 0, prog = -1, lastFrame = 0;
+  const touchUI = window.matchMedia('(pointer: coarse)').matches;
   const t0 = performance.now();
   const q = new URLSearchParams(location.search).get('build');   // ?build=1.6 fige la construction à 1,6 s (pour les tests)
   const frozen = q === null ? null : parseFloat(q) || 0;
@@ -388,7 +389,10 @@ function start(renderer) {
     const max = document.documentElement.scrollHeight - document.documentElement.clientHeight;   // stable quand la barre d'iPhone se replie
     const rp = window.reliefProg ? window.reliefProg() : null;   // téléphone : la caméra suit les écrans
     const target = rp !== null ? rp : max > 0 ? MathUtils.clamp(window.scrollY / max / 0.9, 0, 1) : 0;   // sommet atteint un peu avant le bas de page
-    prog = prog < 0 || reduce ? target : prog + (target - prog) * 0.07;
+    /* lissage court et indépendant de l'écran (60 ou 120 Hz) : la caméra s'arrête presque en même temps que la page */
+    const dts = lastFrame ? Math.min(0.1, (now - lastFrame) / 1000) : 0; lastFrame = now;
+    if (prog < 0 || reduce) prog = target;
+    else { prog += (target - prog) * (1 - Math.exp(-dts / (touchUI ? 0.06 : 0.11))); if (Math.abs(target - prog) < 0.0004) prog = target; }
     eased.x += (pointer.x - eased.x) * 0.04; eased.y += (pointer.y - eased.y) * 0.04;
     path.pos.getPoint(prog, camPos); path.look.getPoint(prog, camLook);
     const calm = 1 - prog * 0.7;

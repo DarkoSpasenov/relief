@@ -49,11 +49,19 @@
     }
     return 1;
   };
+  /* Les arrêts sont de petits repères invisibles posés dans la page (et non les blocs eux-mêmes) :
+     les blocs bougent avec le défilement (effets d'entrée), et un arrêt qui bouge fait « trembler »
+     la page quand elle s'arrête. Les repères, eux, ne bougent jamais. */
+  var marks = [], snapKey = '';
   function layoutSnaps() {
-    document.querySelectorAll('.snap-pt').forEach(function (el) { el.classList.remove('snap-pt'); el.style.scrollMarginTop = ''; });
-    snapYs = [];
-    var faqHead = q('#faq .sec-head'); if (faqHead) faqHead.style.marginBottom = '';
-    if (!snapMq.matches) return;
+    var faqHead = q('#faq .sec-head');
+    if (!snapMq.matches) {
+      marks.forEach(function (mk) { mk.remove(); }); marks = []; snapYs = []; snapKey = '';
+      document.querySelectorAll('.snap-pt').forEach(function (el) { el.classList.remove('snap-pt'); delete el.dataset.snapY; });
+      if (faqHead) faqHead.style.marginBottom = '';
+      return;
+    }
+    if (faqHead) faqHead.style.marginBottom = '';
     var navH = 76, vh = stableH(), avail = vh - navH;
     var climbs = document.querySelectorAll('.climb');
     var groups = [
@@ -62,21 +70,28 @@
       [q('#services .wrap')], [q('#studio .wrap')], [q('#methode .wrap')], [q('#faq .wrap')],
       [q('.contact .contact-card')]
     ];
-    var hero = q('.hero'); if (hero) { hero.classList.add('snap-pt'); hero.style.scrollMarginTop = '0px'; }
-    snapYs = [0];
+    var ys = [0], owners = [q('.hero')];
     groups.forEach(function (g) {
       var a = g[0], b = g[g.length - 1]; if (!a || !b) return;
       var h = docTop(b) + b.offsetHeight - docTop(a);
       var m = navH + Math.max(12, (avail - h) / 2);
       /* FAQ : titre collé sous le menu, questions en bas, le drapeau du sommet reste visible entre les deux */
       if (faqHead && a === q('#faq .wrap') && avail - h > 40) {
-        faqHead.style.marginBottom = Math.round(parseFloat(getComputedStyle(faqHead).marginBottom) + avail - h - 100) + "px";
+        faqHead.style.marginBottom = Math.round(parseFloat(getComputedStyle(faqHead).marginBottom) + avail - h - 100) + 'px';
         m = navH + 12;
       }
       /* contact : la carte descend en bas de l'écran, le drapeau du sommet reste visible au-dessus */
       if (a === q('.contact .contact-card')) m = navH + Math.max(12, avail - h - 20);
-      a.classList.add('snap-pt'); a.style.scrollMarginTop = Math.round(m) + 'px';
-      snapYs.push(docTop(a) - Math.round(m));
+      ys.push(Math.max(0, docTop(a) - Math.round(m))); owners.push(a);
+    });
+    var key = ys.join(',');
+    if (key === snapKey) return;   // rien n'a changé : on ne touche à rien (sinon la page se recale)
+    snapKey = key; snapYs = ys;
+    while (marks.length < ys.length) { var mk = document.createElement('i'); mk.className = 'snap-mark'; mk.setAttribute('aria-hidden', 'true'); document.body.appendChild(mk); marks.push(mk); }
+    while (marks.length > ys.length) marks.pop().remove();
+    ys.forEach(function (y, i) {
+      marks[i].style.top = y + 'px';
+      if (owners[i]) { owners[i].classList.add('snap-pt'); owners[i].dataset.snapY = y; }
     });
   }
   var snapT; function askSnaps() { clearTimeout(snapT); snapT = setTimeout(layoutSnaps, 120); }
@@ -108,8 +123,8 @@
     else {
       if (!snapMq.matches) return; /* ordinateur : défilement natif */
       var target = document.getElementById(id); if (!target) return;
-      var pt = target.querySelector('.snap-pt') || target;
-      y = docTop(pt) - (parseFloat(pt.style.scrollMarginTop) || 80);
+      var pt = target.classList.contains('snap-pt') ? target : target.querySelector('.snap-pt');
+      y = pt && pt.dataset.snapY ? +pt.dataset.snapY : docTop(target) - 80;
     }
     e.preventDefault();
     glideTo(y);
