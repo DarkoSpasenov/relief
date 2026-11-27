@@ -44,11 +44,3 @@ CACHE DES NAVIGATEURS
 Après chaque modification de relief.css ou des .js, changer le ?v=AAAAMMJJ dans les balises
 <link>/<script> en haut de index.html (et des pages légales pour le CSS), sinon les visiteurs
 gardent l'ancienne version en cache.
-
-VERSION 2 (style flyer) — dossier v2/
--------------------------------------
-v2/index.html           Deuxième version : photo de sommet à l'heure dorée, fond clair, très peu de texte
-v2/assets/              Style (v2.css), script (v2.js), logo trait, police Plus Jakarta Sans, photos
-                        Photos Unsplash (licence libre) : Marek Piwnicki (sommet), Ryan Klaus (Gruyère)
-La v2 réutilise assets/work/ (captures) et site-config.js du site principal.
-En ligne sur …/relief/v2/ (le site principal à la racine ne change pas).
